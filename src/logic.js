@@ -1,5 +1,4 @@
 function info() {
-    console.log("info request")
     const response = {
         apiversion: "1",
         author: "",
@@ -27,6 +26,7 @@ function move(gameState) {
     }
 
     // Step 0: Don't let your Battlesnake move back on its own neck
+    console.log(JSON.stringify(gameState));
     const myHead = gameState.you.head
     const myNeck = gameState.you.body[1]
     if (myNeck.x < myHead.x) {
