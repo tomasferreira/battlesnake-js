@@ -1,5 +1,5 @@
 function info() {
-    console.log("INFO")
+    console.log("info request")
     const response = {
         apiversion: "1",
         author: "",
