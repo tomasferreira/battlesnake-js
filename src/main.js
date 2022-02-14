@@ -2,10 +2,10 @@ const Game = require('./Game');
 const games = {};
 
 function info() {
-  console.log('INFO')
+  console.log('INFO');
   const response = {
     apiversion: '1',
-    author: '',
+    author: 'tomasferreira',
     color: '#FF0000',
     head: 'default',
     tail: 'default'
