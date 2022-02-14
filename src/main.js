@@ -5,7 +5,7 @@ function info() {
   console.log('INFO');
   const response = {
     apiversion: '1',
-    author: 'tomasferreira',
+    author: 'tomasvcferreira',
     color: '#FF0000',
     head: 'default',
     tail: 'default'
