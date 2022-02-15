@@ -27,15 +27,15 @@ class Player {
     checkWalls(head, board, possibleMoves);
 
 
-    // TODO: Step 2 - Don't hit yourself.
+    // Step 2 - Don't hit yourself.
     // Use information in gameState to prevent your Battlesnake from colliding with itself.
     checkBody(head, body, possibleMoves);
 
-    // TODO: Step 3 - Don't collide with others.
+    // Step 3 - Don't collide with others.
     // Use information in gameState to prevent your Battlesnake from colliding with others.
     checkSnakes(head, snakes, possibleMoves);
 
-    // TODO: Step 4 - Find food.
+    // Step 4 - Find food.
     // Use information in gameState to seek out and find food.
     const food = gameState.board.food;
     food.sort((a, b) => {
