@@ -79,6 +79,12 @@ function checkSnakes(head, snakes, moves) {
 function prepareReport(gameState) {
   let winnerName = false;
   let won = false;
+  let turns = gameState.turn;
+  let opponents = [];
+
+  gameState.board.snakes.forEach(snake => {
+    opponents.push(snake.name);
+  });
 
   if (gameState.board.snakes.length !== 0) {
     const winningSnake = gameState.board.snakes[0];
@@ -90,7 +96,9 @@ function prepareReport(gameState) {
   // Save the results to storage
   return {
     winnerName,
-    won
+    won,
+    turns,
+    opponents
   };
 }
 
