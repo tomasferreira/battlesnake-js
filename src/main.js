@@ -5,7 +5,7 @@ function info() {
   console.log('INFO');
   const response = {
     apiversion: '1',
-    author: 'tomasferreira',
+    author: 'tomasvcferreira',
     color: '#FF0000',
     head: 'default',
     tail: 'default'
@@ -28,9 +28,10 @@ function end(gameState) {
 
 function move(gameState) {
   let gameID = gameState.game.id;
-  console.log('turn: ' + ++games[gameID].turn);
   let move = games[gameID].player.move(gameState);
-  console.log(move);
+  
+  games[gameID].turn++;
+  console.log(move, games[gameID].turn);
   return move;
 }
 
