@@ -3,7 +3,7 @@ function distance(x1, y1, x2, y2) {
 }
 
 function getDirection(pos, target) {
-  if(!pos || !target) return '';
+  if (!pos || !target) return '';
   if (pos.x > target.x) return 'left';
   else if (pos.x < target.x) return 'right';
   else if (pos.y > target.y) return 'down';
@@ -70,10 +70,48 @@ function checkBody(head, body, moves) {
   });
 }
 
-function checkSnakes(head, snakes, moves){
+function checkSnakes(head, snakes, moves) {
   snakes.forEach(snake => {
     checkBody(head, snake.body, moves);
   });
+}
+
+function prepareReport(gameState) {
+  let winnerName = false;
+  let won = false;
+
+  if (gameState.board.snakes.length !== 0) {
+    const winningSnake = gameState.board.snakes[0];
+    winnerName = gameState.board.snakes[0].name;
+    if (winningSnake.id === gameState.you.id) {
+      won = true;
+    }
+  }
+  // Save the results to storage
+  return {
+    winnerName,
+    won
+  };
+}
+
+function report(games) {
+  const gamesWon = games.filter(g => g.report.won);
+  const gamesLost = games.filter(g => !g.report.won);
+  const winPercent = Math.floor(gamesWon.length / games.length * 100);
+
+  // First, show the win rate
+  let body = `After ${games.length} games, you have ${gamesWon.length} wins for rate of ${winPercent}%`;
+
+  // Next, find the people who defeated me the most
+  const winnersNames = gamesLost.map((game) => game.report.winnerName);
+  const rankedWinners = winnersNames.sort((a, b) => {
+    winnersNames.filter(w => w === a).length - winnersNames.filter(w => w === b).length;
+  });
+
+  const highestWinner = rankedWinners[0];
+  const highestWinnerCount = rankedWinners.filter(w => w === highestWinner).length;
+  body += `\nYou lost the most to ${highestWinner} (${highestWinnerCount} times)`;
+  return body;
 }
 
 module.exports = {
@@ -82,5 +120,7 @@ module.exports = {
   checkNeck,
   checkWalls,
   checkBody,
-  checkSnakes
+  checkSnakes,
+  prepareReport,
+  report
 };
