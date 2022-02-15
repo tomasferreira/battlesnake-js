@@ -53,11 +53,11 @@ class Player {
     if (direction && safeMoves.includes(direction)) {
       move = direction;
       shout += direction;
-      console.log('is safe: ' + direction);
+      // console.log('is safe: ' + direction);
     } else {
       move = safeMoves[Math.floor(Math.random() * safeMoves.length)];
       shout += move;
-      console.log('random: ' + move);
+      // console.log('random: ' + move);
     }
     return {
       move: move,
