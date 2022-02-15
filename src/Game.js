@@ -5,6 +5,7 @@ class Game {
     this.id = gameID;
     this.player = new Player();
     this.turn = 0;
+    this.report;
   }
 }
 

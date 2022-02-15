@@ -1,8 +1,13 @@
 const Game = require('./Game');
+const { prepareReport, report } = require('./utils');
 const games = {};
 
 function info() {
-  console.log('INFO');
+  if (Object.entries(games).length > 0) {
+    console.log(report(Object.values(games)));
+  } else {
+    console.log('INFO');
+  }
   const response = {
     apiversion: '1',
     author: 'tomasvcferreira',
@@ -23,16 +28,17 @@ function start(gameState) {
 function end(gameState) {
   let gameID = gameState.game.id;
   console.log(`${gameID} END\n`);
-  delete games[gameID];
+  games[gameID].report = prepareReport(gameState);
+  console.log(games[gameID].report);
 }
 
 function move(gameState) {
   let gameID = gameState.game.id;
-  console.log(`${gameID} MOVE\n`);
+  // console.log(`${gameID} MOVE\n`);
   let move = games[gameID].player.move(gameState);
-  
+
   games[gameID].turn++;
-  console.log(move, games[gameID].turn);
+  // console.log(move, games[gameID].turn);
   return move;
 }
 
