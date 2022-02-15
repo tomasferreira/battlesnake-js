@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 const { info, move, start } = require('../src/main');
 
 function createGameState(myBattlesnake) {
