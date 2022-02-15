@@ -14,7 +14,8 @@
   "license": "MIT",
   "homepage": "https://github.com/BattlesnakeOfficial/starter-snake-javascript#readme",
   "dependencies": {
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "raygun4js": "^2.25.1"
   },
   "devDependencies": {
     "eslint": "^8.9.0",

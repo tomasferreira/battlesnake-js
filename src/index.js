@@ -1,5 +1,10 @@
+const rg4js = require('raygun4js');
 const express = require('express');
 const { info, start, move, end } = require('./main');
+
+//enable monitoring
+rg4js('apiKey', 'xmIfWaGL95sWTUjalxrKrw');
+rg4js('enablePulse', true);
 
 const app = express();
 app.use(express.json());
