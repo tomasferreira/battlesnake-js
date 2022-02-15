@@ -1,14 +1,5 @@
-const raygun = require('raygun');
 const express = require('express');
-
 const { info, start, move, end } = require('./main');
-
-//enable monitoring
-new raygun.Client().init({
-  apiKey: 'xmIfWaGL95sWTUjalxrKrw',
-  batch: true,
-  reportUncaughtExceptions: true
-});
 
 const app = express();
 app.use(express.json());
