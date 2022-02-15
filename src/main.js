@@ -28,6 +28,7 @@ function end(gameState) {
 
 function move(gameState) {
   let gameID = gameState.game.id;
+  console.log(`${gameID} MOVE\n`);
   let move = games[gameID].player.move(gameState);
   
   games[gameID].turn++;
