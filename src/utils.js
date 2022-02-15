@@ -70,10 +70,17 @@ function checkBody(head, body, moves) {
   });
 }
 
+function checkSnakes(head, snakes, moves){
+  snakes.forEach(snake => {
+    checkBody(head, snake.body, moves);
+  });
+}
+
 module.exports = {
   distance,
   getDirection,
   checkNeck,
   checkWalls,
-  checkBody  
+  checkBody,
+  checkSnakes
 };

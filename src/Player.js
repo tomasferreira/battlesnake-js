@@ -1,4 +1,4 @@
-const { distance, getDirection, checkNeck, checkWalls, checkBody } = require('./utils');
+const { distance, getDirection, checkNeck, checkWalls, checkBody, checkSnakes } = require('./utils');
 
 class Player {
   constructor() {
@@ -9,6 +9,7 @@ class Player {
     const neck = gameState.you.body[1];
     const board = gameState.board;
     const body = gameState.you.body;
+    const snakes = gameState.board.snakes.filter(snake => snake.name != gameState.you.name);
 
     let possibleMoves = {
       up: true,
@@ -32,6 +33,7 @@ class Player {
 
     // TODO: Step 3 - Don't collide with others.
     // Use information in gameState to prevent your Battlesnake from colliding with others.
+    checkSnakes(head, snakes, possibleMoves);
 
     // TODO: Step 4 - Find food.
     // Use information in gameState to seek out and find food.
