@@ -48,14 +48,14 @@ class Player {
     const safeMoves = Object.keys(possibleMoves).filter(key => possibleMoves[key]);
     // console.log(JSON.stringify(safeMoves));
 
-    if (safeMoves.includes(direction)) {
+    if (direction && safeMoves.includes(direction)) {
       move = direction;
       shout += direction;
-      // console.log('is safe: ' + direction);
+      console.log('is safe: ' + direction);
     } else {
       move = safeMoves[Math.floor(Math.random() * safeMoves.length)];
       shout += move;
-      // console.log('random: ' + move);
+      console.log('random: ' + move);
     }
     return {
       move: move,

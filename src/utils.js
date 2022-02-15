@@ -3,6 +3,7 @@ function distance(x1, y1, x2, y2) {
 }
 
 function getDirection(pos, target) {
+  if(!pos || !target) return '';
   if (pos.x > target.x) return 'left';
   else if (pos.x < target.x) return 'right';
   else if (pos.y > target.y) return 'down';
