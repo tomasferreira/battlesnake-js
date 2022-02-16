@@ -77,7 +77,6 @@ function checkSnakes(head, snakes, moves) {
 }
 
 function prepareReport(gameState, game) {
-  console.log(game);
   let winnerName = false;
   let won = false;
   let turns = gameState.turn;
