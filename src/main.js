@@ -38,7 +38,7 @@ function start(gameState) {
     slowestMove = 0;
     log.status('Snakes playing this game are:');
     try {
-      gameState.board.snakes.forEach(({ id, name, health, body }) => {
+      gameState.board.snakes.forEach(({ name}) => {
         log.status(name);
       });
     }

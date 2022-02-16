@@ -33,7 +33,7 @@ const buildGrid = data => {
 
   try {
     // fill snake locations
-    board.snakes.forEach(({ id, name, health, body }) => {
+    board.snakes.forEach(({ id, health, body }) => {
       // fill SNAKE_BODY locations
       body.forEach(({ x, y }) => {
         if (id === self.id) grid[y][x] = keys.YOUR_BODY;
@@ -86,7 +86,7 @@ const buildGrid = data => {
     });
 
     // fill DANGER or KILL_ZONE locations around each snake head
-    board.snakes.forEach(({ id, name, health, body }) => {
+    board.snakes.forEach(({ id, body }) => {
       if (id == self.id) return;
       // const imBigger = self.body.length > body.length;
       let pos = { x: 0, y: 0 };
@@ -251,7 +251,7 @@ const moveTails = (moves, grid, data) => {
   try {
     let you = data.you;
     let gridCopy = copyGrid(grid);
-    data.board.snakes.forEach(({ id, name, health, body }) => {
+    data.board.snakes.forEach(({ id, body }) => {
       for (let tailOffset = 1; tailOffset <= moves; tailOffset++) {
         let tailY = body[body.length - tailOffset].y;
         let tailX = body[body.length - tailOffset].x;

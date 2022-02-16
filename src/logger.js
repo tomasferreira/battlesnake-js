@@ -13,6 +13,7 @@ const initGameLogs = () => {
 const writeLogs = (data) => {
   if (p.CONSOLE_LOG) console.log(exLog);
   const gameId = data.game.id;
+  // eslint-disable-next-line no-undef
   const path = `${__dirname}/../logs/${gameId}.txt`;
   // append game exeptions to end of log for easy viewing
   log += '\n' + exLog;
@@ -26,6 +27,7 @@ const writeLogs = (data) => {
       // update index of logs
       // read current index
       fs.readFile(
+        // eslint-disable-next-line no-undef
         `${__dirname}/../logs/index.html`,
         'utf8',
         (err, contents) => {
@@ -34,6 +36,7 @@ const writeLogs = (data) => {
           const newIndex = contents + '\n' + newEntry;
           // write updated index
           fs.writeFile(
+            // eslint-disable-next-line no-undef
             `${__dirname}/../logs/index.html`,
             newIndex,
             err => {
@@ -50,7 +53,7 @@ const writeLogs = (data) => {
 // debug levels
 const error = (message, turn = null) => {
   log += `ERROR: ${message}\n`;
-  if (p.CONSOLE_LOG) console.log(`ERROR: ${message}`);
+  if (p.CONSOLE_LOG) console.error(`ERROR: ${message}`);
   exLog += `EX ON TURN ${turn != null ? turn : 'none'}: ${message}\n`;
 };
 const status = message => {

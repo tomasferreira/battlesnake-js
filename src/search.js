@@ -54,7 +54,6 @@ const fill = (direction, grid, data, constraints = []) => {
     closedGrid[pos.y][pos.x] = true; 
   };
 
-  let size = you.body.length;
   let current = you.body[0];
   let givenMovePos = {x: current.x, y: current.y};
   switch(direction) {
@@ -281,8 +280,6 @@ const preprocessGrid = (grid, data) => {
           if (params.DEBUG) log.debug(`Enemy at ${pairToString(enemy)} is on perimeter`);
           let result = edgeFillFromEnemyToYou(enemy, gridCopy, grid, data);
           gridCopy = result.grid;
-          let move = null;
-          
         }
       }
       return gridCopy;
