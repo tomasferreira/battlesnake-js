@@ -4,7 +4,7 @@ const games = {};
 
 function info() {
   if (Object.entries(games).length > 0) {
-    // console.log(report(Object.values(games)));
+    console.log(report(Object.values(games)));
   } else {
     console.log('INFO');
   }
@@ -21,15 +21,15 @@ function info() {
 function start(gameState) {
   let gameID = gameState.game.id;
   console.log(`${gameID} START`);
-  var game = new Game(gameID);
+  var game = new Game(gameState);
   games[gameID] = game;
 }
 
 function end(gameState) {
   let gameID = gameState.game.id;
   console.log(`${gameID} END\n`);
-  games[gameID].report = prepareReport(gameState);
-  console.log(games[gameID].report);
+  prepareReport(gameState, games[gameID]);
+  console.log(games[gameID]);
 }
 
 function move(gameState) {

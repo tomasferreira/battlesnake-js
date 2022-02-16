@@ -76,15 +76,11 @@ function checkSnakes(head, snakes, moves) {
   });
 }
 
-function prepareReport(gameState) {
+function prepareReport(gameState, game) {
+  console.log(game);
   let winnerName = false;
   let won = false;
   let turns = gameState.turn;
-  let opponents = [];
-
-  gameState.board.snakes.forEach(snake => {
-    opponents.push(snake.name);
-  });
 
   if (gameState.board.snakes.length !== 0) {
     const winningSnake = gameState.board.snakes[0];
@@ -93,25 +89,22 @@ function prepareReport(gameState) {
       won = true;
     }
   }
-  // Save the results to storage
-  return {
-    winnerName,
-    won,
-    turns,
-    opponents
-  };
+
+  game.winnerName = winnerName;
+  game.won = won;
+  game.turns = turns;
 }
 
 function report(games) {
-  const gamesWon = games.filter(g => g.report.won);
-  const gamesLost = games.filter(g => !g.report.won);
+  const gamesWon = games.filter(g => g.won);
+  const gamesLost = games.filter(g => !g.won);
   const winPercent = Math.floor(gamesWon.length / games.length * 100);
 
   // First, show the win rate
   let body = `After ${games.length} games, you have ${gamesWon.length} wins for rate of ${winPercent}%`;
 
   // Next, find the people who defeated me the most
-  const winnersNames = gamesLost.map((game) => game.report.winnerName);
+  const winnersNames = gamesLost.map((game) => game.winnerName);
   const rankedWinners = winnersNames.sort((a, b) => {
     winnersNames.filter(w => w === a).length - winnersNames.filter(w => w === b).length;
   });
