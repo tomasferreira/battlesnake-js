@@ -1,68 +1,75 @@
-const { distance, getDirection, checkNeck, checkWalls, checkBody, checkSnakes } = require('./utils');
+const keys = require('./keys');
+const g = require('./grid');
+const m = require('./move');
+const p = require('./params');
+const s = require('./self');
+const log = require('./logger');
+const search = require('./search');
 
 class Player {
-  constructor() {
+  move(data, slowest, slowestMove) {
 
-  }
-  move(gameState) {
-    const head = gameState.you.head;
-    const neck = gameState.you.body[1];
-    const board = gameState.board;
-    const body = gameState.you.body;
-    const snakes = gameState.board.snakes.filter(snake => snake.name != gameState.you.name);
+    let startTime;
+    if (p.STATUS) {
+      let date = new Date();
+      startTime = date.getMilliseconds();
+    }
 
-    let possibleMoves = {
-      up: true,
-      down: true,
-      left: true,
-      right: true
-    };
-    let move = {};
+    const health = data.you.health;
+    const turn = data.turn;
 
-    // Step 0: Don't let your Battlesnake move back on its own neck
-    checkNeck(head, neck, possibleMoves);
+    if (p.STATUS) log.status(`\n\n####################################### MOVE ${data.turn}`);
 
-    // Step 1 - Don't hit walls.
-    // Use information in gameState to prevent your Battlesnake from moving beyond the boundaries of the board.
-    checkWalls(head, board, possibleMoves);
+    let grid = [];
+    try {
+      grid = g.buildGrid(data);
+      grid = search.preprocessGrid(grid, data);
+    }
+    catch (e) { log.error(`ex in main.buildGrid: ${e}`, turn); }
 
+    let move = null;
+    if (p.DEBUG) log.status(`biggest snake ? ${s.biggestSnake(data)}`);
 
-    // Step 2 - Don't hit yourself.
-    // Use information in gameState to prevent your Battlesnake from colliding with itself.
-    checkBody(head, body, possibleMoves);
+    const minHealth = p.SURVIVAL_MIN - Math.floor(data.turn / p.LONG_GAME_ENDURANCE);
+    // if you are hungry or small you gotta eat
+    if (health < minHealth || turn < p.INITIAL_FEEDING) {
+      try { move = m.eat(grid, data); }
+      catch (e) { log.error(`ex in main.survivalMin: ${e}`, turn); }
+    }
+    // start early game by killing some time, to let dumb snakes die
+    else if (turn < p.INITIAL_TIME_KILL) {
+      try { move = m.killTime(grid, data); }
+      catch (e) { log.error(`ex in main.initialKillTime: ${e}`, turn); }
+    }
+    else if (!s.biggestSnake(data)) {
+      try { move = m.eat(grid, data); }
+      catch (e) { log.error(`ex in main.notBiggest: ${e}`, turn); }
+    }
+    // if you are the biggest you can go on the hunt
+    else if (s.biggestSnake(data)) {
+      try { move = m.hunt(grid, data); }
+      catch (e) { log.error(`ex in main.biggest: ${e}`, turn); }
+    }
+    // backup plan?
+    if (move === null) {
+      try { move = m.eat(grid, data); }
+      catch (e) { log.error(`ex in main.backupPlan: ${e}`, turn); }
+    }
 
-    // Step 3 - Don't collide with others.
-    // Use information in gameState to prevent your Battlesnake from colliding with others.
-    checkSnakes(head, snakes, possibleMoves);
-
-    // Step 4 - Find food.
-    // Use information in gameState to seek out and find food.
-    const food = gameState.board.food;
-    food.sort((a, b) => {
-      return distance(head.x, head.y, a.x, a.y) - distance(head.x, head.y, b.x, b.y);
-    });
-
-    const target = food[0];
-    // console.log('target', target);
-    let direction = getDirection(head, target);
-    let shout = 'GOING ';
-
-    const safeMoves = Object.keys(possibleMoves).filter(key => possibleMoves[key]);
-    // console.log(JSON.stringify(safeMoves));
-
-    if (direction && safeMoves.includes(direction)) {
-      move = direction;
-      shout += direction;
-      // console.log('is safe: ' + direction);
-    } else {
-      move = safeMoves[Math.floor(Math.random() * safeMoves.length)];
-      shout += move;
-      // console.log('random: ' + move);
+    if (p.STATUS) {
+      let date2 = new Date();
+      let endTime = date2.getMilliseconds();
+      if (endTime - startTime > slowest) {
+        slowest = endTime - startTime;
+        slowestMove = data.turn;
+      }
+      log.status(`Move ${data.turn} took ${endTime - startTime}ms.`);
     }
     return {
-      move: move,
-      shout: shout
+      move: move ? keys.DIRECTION[move] : keys.DIRECTION[keys.UP]
     };
+
   }
 }
+
 module.exports = Player;
