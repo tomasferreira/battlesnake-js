@@ -4,7 +4,7 @@ const games = {};
 
 function info() {
   if (Object.entries(games).length > 0) {
-    console.log(report(Object.values(games)));
+    // console.log(report(Object.values(games)));
   } else {
     console.log('INFO');
   }
