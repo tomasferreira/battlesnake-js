@@ -1,9 +1,9 @@
-const keys = require("./keys");
-const g = require("./grid");
-const t = require("./target");
-const s = require("./self");
-const params = require("./params");
-const log = require("./logger");
+const keys = require('./keys');
+const g = require('./grid');
+const t = require('./target');
+const s = require('./self');
+const params = require('./params');
+const log = require('./logger');
 
 // fill an area
 const fill = (direction, grid, data, constraints = []) => {
@@ -58,17 +58,17 @@ const fill = (direction, grid, data, constraints = []) => {
   let current = you.body[0];
   let givenMovePos = {x: current.x, y: current.y};
   switch(direction) {
-    case keys.UP:
-      givenMovePos.y -= 1;
-      break;
-    case keys.DOWN:
-      givenMovePos.y += 1;
-      break;
-    case keys.LEFT:
-      givenMovePos.x -= 1;
-      break;
-    case keys.RIGHT:
-      givenMovePos.x += 1;
+  case keys.UP:
+    givenMovePos.y += 1;
+    break;
+  case keys.DOWN:
+    givenMovePos.y -= 1;
+    break;
+  case keys.LEFT:
+    givenMovePos.x -= 1;
+    break;
+  case keys.RIGHT:
+    givenMovePos.x += 1;
   }
   addToOpen(givenMovePos);
   addToClosed(current);
@@ -86,33 +86,33 @@ const fill = (direction, grid, data, constraints = []) => {
     const nextMove = removeFromOpen();
     addToClosed(nextMove);
     switch(inGrid(nextMove, grid)) {
-      case keys.ENEMY_HEAD:
-        enemyHeads++;
-        break;
-      case keys.TAIL:
-        tails++;
-        break;
-      case keys.KILL_ZONE:
-        killZones++;
-        break;
-      case keys.FOOD:
-        foods++;
-        break;
-      case keys.WALL_NEAR:
-        walls++;
-        break;
-      case keys.WARNING:
-        warnings++;
-        break;
-      default:
+    case keys.ENEMY_HEAD:
+      enemyHeads++;
+      break;
+    case keys.TAIL:
+      tails++;
+      break;
+    case keys.KILL_ZONE:
+      killZones++;
+      break;
+    case keys.FOOD:
+      foods++;
+      break;
+    case keys.WALL_NEAR:
+      walls++;
+      break;
+    case keys.WARNING:
+      warnings++;
+      break;
+    default:
     }
     area++;
 
     // check up
-    const nUp = {x: nextMove.x, y: nextMove.y - 1};
+    const nUp = {x: nextMove.x, y: nextMove.y + 1};
     addToOpen(nUp);
     // check down
-    const nDown = {x: nextMove.x, y: nextMove.y + 1};
+    const nDown = {x: nextMove.x, y: nextMove.y - 1};
     addToOpen(nDown);
     // check left
     const nLeft = {x: nextMove.x - 1, y: nextMove.y};
@@ -138,12 +138,12 @@ const fill = (direction, grid, data, constraints = []) => {
 
   if (params.DEBUG) log.debug(`Score in fill: ${score} for move ${keys.DIRECTION[direction]}. Area: ${area}`);
   return score;
-}
+};
 
 // a* pathfinding algorithm that will find the shortest path from current head
 // location to a given destination
 const astar = (grid, data, destination, searchType = keys.FOOD, alternateStartPos = null) => {
-  if (params.STATUS) log.status("Calculating path (astar)...");
+  if (params.STATUS) log.status('Calculating path (astar)...');
   // init search fields
   const searchScores = buildAstarGrid(grid);
   let openSet = [];
@@ -153,12 +153,12 @@ const astar = (grid, data, destination, searchType = keys.FOOD, alternateStartPo
   const start = (alternateStartPos === null) ? s.location(data) : alternateStartPos;
   // on first few moves, point to closest food no matter what
   if (data.turn < params.INITIAL_FEEDING) {
-    if (params.DEBUG) log.debug("Within initial feeding, overriding move with closest food.")
+    if (params.DEBUG) log.debug('Within initial feeding, overriding move with closest food.');
     destination = t.closestFood(grid, start);
     searchType = keys.FOOD;
   }
   if (destination == null) {
-    log.debug("In search.astar, destination was null, trying to target tail.");
+    log.debug('In search.astar, destination was null, trying to target tail.');
     destination = s.tailLocation(data);
     searchType = keys.TAIL;
   }
@@ -178,7 +178,7 @@ const astar = (grid, data, destination, searchType = keys.FOOD, alternateStartPo
     });
     // check if found destination
     if (sameCell(lowestCell, destination)) {
-      if (params.STATUS) log.status("Found a path!");
+      if (params.STATUS) log.status('Found a path!');
       // if (p.DEBUG_MAPS) {
       //   log.debug("astar grid after search success:");
       //   printFScores(astarGrid);
@@ -197,7 +197,7 @@ const astar = (grid, data, destination, searchType = keys.FOOD, alternateStartPo
     }
     // else continue searching
     let current = lowestCell;
-    currentCell = searchScores[current.y][current.x];
+    let currentCell = searchScores[current.y][current.x];
     // update sets
     openSet = openSet.filter(
       pair => !(pair.x === current.x && pair.y === current.y)
@@ -210,7 +210,7 @@ const astar = (grid, data, destination, searchType = keys.FOOD, alternateStartPo
       const neighbor = currentNeighbors[n];
       let neighborCell = searchScores[neighbor.y][neighbor.x];
       if (sameCell(neighbor, destination)) {
-        if (params.STATUS) log.status("Found a path (neighbor)");
+        if (params.STATUS) log.status('Found a path (neighbor)');
         neighborCell.previous = current;
         // if (p.DEBUG_MAPS) {
         //   log.debug("astar grid after search success:");
@@ -258,7 +258,7 @@ const astar = (grid, data, destination, searchType = keys.FOOD, alternateStartPo
   }
   // if reach this point and open set is empty, no path
   if (!openSet.length) {
-    if (params.STATUS) log.status("COULD NOT FIND PATH!");
+    if (params.STATUS) log.status('COULD NOT FIND PATH!');
     // if (p.DEBUG_MAPS) {
     //   localStorage.debug("astar grid after search failure:");
     //   printFScores(searchScores);
@@ -271,9 +271,9 @@ const astar = (grid, data, destination, searchType = keys.FOOD, alternateStartPo
 // preprocess grid to find valuable cells
 const preprocessGrid = (grid, data) => {
   try {
-    if (params.STATUS) log.status("Preprocessing grid.");
+    if (params.STATUS) log.status('Preprocessing grid.');
     if (g.nearPerimeter(s.location(data), grid)) {
-      if (params.DEBUG) log.debug(`I am near perimeter.`);
+      if (params.DEBUG) log.debug('I am near perimeter.');
       const enemyLocations = getEnemyLocations(data);
       let gridCopy = g.copyGrid(grid);
       for (let enemy of enemyLocations) {
@@ -290,7 +290,7 @@ const preprocessGrid = (grid, data) => {
   }
   catch (e) { log.error(`ex in search.preprocess: ${e}`, data.turn); }
   return grid;
-}
+};
 
 const edgeFillFromEnemyToYou = (enemy, gridCopy, grid, data) => {
   try {
@@ -356,7 +356,7 @@ const edgeFillFromEnemyToYou = (enemy, gridCopy, grid, data) => {
         if (params.DEBUG) log.debug(`Next move in enemy fill search is ${pairToString(nextMove)}`);
 
         // check up
-        const nextUp = {x: nextMove.x, y: nextMove.y - 1};
+        const nextUp = {x: nextMove.x, y: nextMove.y + 1};
         if (!outOfBounds(nextUp, grid)) {
           if (sameCell(yourHead, nextUp)) {
             foundMe = true;
@@ -371,7 +371,7 @@ const edgeFillFromEnemyToYou = (enemy, gridCopy, grid, data) => {
           addToOpen(nextUp);
         }
         // check down
-        const nextDown = {x: nextMove.x, y: nextMove.y + 1};
+        const nextDown = {x: nextMove.x, y: nextMove.y - 1};
         if (!outOfBounds(nextDown, grid)) {
           if (sameCell(yourHead, nextDown)) {
             foundMe = true;
@@ -427,7 +427,7 @@ const edgeFillFromEnemyToYou = (enemy, gridCopy, grid, data) => {
       }
 
       if (params.DEBUG && params.DEBUG_MAPS) {
-        log.debug("Grid after edge fill search:");
+        log.debug('Grid after edge fill search:');
         g.printGrid(gridCopy);
       }
 
@@ -439,7 +439,7 @@ const edgeFillFromEnemyToYou = (enemy, gridCopy, grid, data) => {
   }
   catch (e) { log.error(`ex in search.edgeFillFromEnemyToYou: ${e}`, data.turn); }
   return { grid: gridCopy, move: null };
-}
+};
 
 // get a list of all enemy heads
 const getEnemyLocations = data => {
@@ -454,7 +454,7 @@ const getEnemyLocations = data => {
   }
   catch (e) { log.error(`ex in search.getEnemyLocations: ${e}`, data.turn); }
   return [];
-}
+};
 
 const getEnemyMoveLocations = (pos, grid) => {
   try {
@@ -468,7 +468,7 @@ const getEnemyMoveLocations = (pos, grid) => {
   }
   catch (e) { log.error(`ex in search.getEnemyMoveLocations: ${e}`); }
   return [];
-}
+};
 
 // distance from pos to center of board
 const distanceToCenter = (direction, startPos, grid, data) => {
@@ -479,7 +479,7 @@ const distanceToCenter = (direction, startPos, grid, data) => {
   }
   catch (e) { log.error(`ex in search.distanceToCenter: ${e}`, data.turn); }
   return 0;
-}
+};
 
 const closeAccessableFuture2FarFromWall = (grid, data) => {
   try {
@@ -510,7 +510,7 @@ const closeAccessableFuture2FarFromWall = (grid, data) => {
   }
   catch (e) { log.error(`ex in search.closeAccessableFuture2FarFromWall: ${e}`, data.turn); }
   return null;
-}
+};
 
 const closeAccessableKillZoneFarFromWall = (grid, data) => {
   try {
@@ -538,7 +538,7 @@ const closeAccessableKillZoneFarFromWall = (grid, data) => {
   }
   catch (e) { log.error(`ex in search.closeAccessableKillZoneFarFromWall: ${e}`, data.turn); }
   return null;
-}
+};
 
 const getFuture2InOrderOfDistanceFromWall = (grid, target) => {
   try {
@@ -567,7 +567,7 @@ const getFuture2InOrderOfDistanceFromWall = (grid, target) => {
       (a, b) => (a.distance < b.distance) ? 1 : ((b.distance < a.distance) ? -1 : 0)
     );
 
-    let future2sSorted = []
+    let future2sSorted = [];
     for (spot of spots) {
       future2sSorted.push(spot.pos);
     }
@@ -576,7 +576,7 @@ const getFuture2InOrderOfDistanceFromWall = (grid, target) => {
   }
   catch (e) { log.error(`ex in search.getFuture2InOrderOfDistanceFromWall: ${e}`); }
   return null;
-}
+};
 
 const getKillZonesInOrderOfDistanceFromWall = (grid, target) => {
   try {
@@ -584,13 +584,13 @@ const getKillZonesInOrderOfDistanceFromWall = (grid, target) => {
     let spot = {};
     let distance = 0;
     // check up
-    spot = { x: target.x, y: target.y - 1 };
+    spot = { x: target.x, y: target.y + 1 };
     if (!outOfBounds(spot, grid) && validMove(keys.UP, target, grid)) {
       distance = distanceFromWall(spot, grid);
       spots.push({ pos: spot, distance: distance });
     }
     // check down
-    spot = { x: target.x, y: target.y + 1 };
+    spot = { x: target.x, y: target.y - 1 };
     if (!outOfBounds(spot, grid) && validMove(keys.DOWN, target, grid)) {
       distance = distanceFromWall(spot, grid);
       spots.push({ pos: spot, distance: distance });
@@ -612,7 +612,7 @@ const getKillZonesInOrderOfDistanceFromWall = (grid, target) => {
       (a, b) => (a.distance < b.distance) ? 1 : ((b.distance < a.distance) ? -1 : 0)
     );
 
-    let killZones = []
+    let killZones = [];
     for (let spot of spots) {
       killZones.push(spot.pos);
     }
@@ -621,22 +621,22 @@ const getKillZonesInOrderOfDistanceFromWall = (grid, target) => {
   }
   catch (e) { log.error(`ex in search.getKillZonesInOrderOfDistanceFromWall: ${e}`); }
   return null;
-}
+};
 
 // calculate the distance a position is from walls
 const distanceFromWall = (pos, grid) => {
   try {
-    let yUp = pos.y;
-    let yDown = (grid.length - 1) - pos.y;
+    let yDown = pos.y;
+    let yUp = (grid.length - 1) - pos.y;
     let xLeft = pos.x;
     let xRight = (grid[0].length - 1) - pos.x;
     let xDistance = Math.min(xLeft, xRight);
     let yDistance = Math.min(yUp, yDown);
     return Math.max(xDistance, yDistance);
   }
-  catch (e) { log.error(`ex in search.distanceFromWall: ${e}`) };
+  catch (e) { log.error(`ex in search.distanceFromWall: ${e}`); }
   return 0;
-}
+};
 
 // TODO: this is broken?
 // const enemySearchForFood = (grid, data) => {
@@ -684,7 +684,7 @@ const distanceToEnemy = (direction, grid, data, type = keys.ENEMY_HEAD) => {
   }
   catch (e) { log.error(`ex in search.distanceToEnemy: ${e}`, data.turn); }
   return 0;
-}
+};
 
 // test if cells are the same
 const sameCell = (a, b) => a.x === b.x && a.y === b.y;
@@ -701,10 +701,10 @@ const arrayIncludesPair = (arr, pair) => {
 const calcDirection = (a, b) => {
   const x = a.x - b.x;
   const y = a.y - b.y;
-  let direction = keys.UP;
+  let direction = keys.DOWN;
   if (x < 0) direction = keys.RIGHT;
   else if (x > 0) direction = keys.LEFT;
-  else if (y < 0) direction = keys.DOWN;
+  else if (y < 0) direction = keys.UP;
   return direction;
 };
 
@@ -723,12 +723,12 @@ const buildAstarGrid = grid => {
 // print search grid f scores
 const printFScores = astarGrid => {
   for (let i = 0; i < astarGrid.length; i++) {
-    let row = "";
+    let row = '';
     for (let j = 0; j < astarGrid[0].length; j++) {
       row +=
         astarGrid[i][j].f < 10
-          ? "  " + astarGrid[i][j].f
-          : " " + astarGrid[i][j].f;
+          ? '  ' + astarGrid[i][j].f
+          : ' ' + astarGrid[i][j].f;
     }
     log.status(row);
   }
@@ -757,18 +757,18 @@ const pairToString = pair => {
   try { return `{x: ${pair.x}, y: ${pair.y}}`; }
   catch (e) {
     log.error(`ex in search.pairToString: ${e}`);
-    return "there was an error caught in search.pairToString";
+    return 'there was an error caught in search.pairToString';
   }
 };
 
 // check if space is out of bounds
 const outOfBounds = ({ x, y }, grid) => {
   try {
-    if (x < 0 || y < 0 || y >= grid.length || x >= grid[0].length) return true
-      else return false
+    if (x < 0 || y < 0 || y >= grid.length || x >= grid[0].length) return true;
+    else return false;
   } catch (e) {
     log.error(`ex in search.outOfBounds: ${e}`);
-    return true
+    return true;
   }
 };
 
@@ -787,17 +787,17 @@ const validMove = (direction, pos, grid) => {
 
 const applyMoveToPos = (move, pos) => {
   switch (move) {
-    case keys.UP:
-      return {x: pos.x, y: pos.y - 1};
-    case keys.DOWN:
-      return {x: pos.x, y: pos.y + 1};
-    case keys.LEFT:
-      return {x: pos.x - 1, y: pos.y};
-    case keys.RIGHT:
-      return {x: pos.x + 1, y: pos.y};
+  case keys.UP:
+    return {x: pos.x, y: pos.y + 1};
+  case keys.DOWN:
+    return {x: pos.x, y: pos.y - 1};
+  case keys.LEFT:
+    return {x: pos.x - 1, y: pos.y};
+  case keys.RIGHT:
+    return {x: pos.x + 1, y: pos.y};
   }
   return {x: 0, y: 0};
-}
+};
 
 module.exports = {
   outOfBounds: outOfBounds,
@@ -809,4 +809,4 @@ module.exports = {
   distanceToCenter: distanceToCenter,
   closeAccessableFuture2FarFromWall: closeAccessableFuture2FarFromWall,
   preprocessGrid: preprocessGrid
-}
+};

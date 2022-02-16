@@ -101,8 +101,8 @@ const buildGrid = data => {
 
       // check up, down, left, right
       let offsets = [
-        {x: 0, y: -1}, // up
-        {x: 0, y: 1},  // down
+        {x: 0, y: 1}, // up
+        {x: 0, y: -1},  // down
         {x: -1, y: 0}, // left
         {x: 1, y: 0},  // right
       ];
@@ -151,14 +151,14 @@ const printGrid = grid => {
   for (let x = 0; x < grid[0].length; x++) {
     xAxis += ` ${x % 10}`;
   }
-  log.status(`${xAxis}\n`);
-  for (let i = 0; i < grid.length; i++) {
+  for (let i = grid.length -1; i >= 0; i--) {
     let row = `${i % 10} `;
     for (let j = 0; j < grid[0].length; j++) {
       row += ` ${keys.MAP[grid[i][j]]}`;
     }
     log.status(row);
   }
+  log.status(`${xAxis}\n`);
 };
 
 // create a grid filled with a given value
@@ -211,8 +211,8 @@ const onPerimeter = (pos, grid) => {
   try {
     const perimeterLeft = 0;
     const perimeterRight = grid[0].length - 1;
-    const perimeterUp = 0;
-    const perimeterDown = grid.length - 1;
+    const perimeterDown = 0;
+    const perimeterUp = grid.length - 1;
     if (
       pos.x === perimeterLeft ||
       pos.x === perimeterRight ||
@@ -231,8 +231,8 @@ const nearPerimeter = (pos, grid) => {
   try {
     const perimeterLeft = 1;
     const perimeterRight = grid[0].length - 2;
-    const perimeterUp = 1;
-    const perimeterDown = grid.length - 2;
+    const perimeterDown = 1;
+    const perimeterUp = grid.length - 2;
     if (
       pos.x === perimeterLeft ||
       pos.x === perimeterRight ||
@@ -266,8 +266,8 @@ const moveTails = (moves, grid, data) => {
       const head = body[0];
       const headZone = imBigger ? keys.KILL_ZONE : keys.DANGER;
       let offsets = [
-        {x: 0, y: -1}, // up
-        {x: 0, y: 1},  // down
+        {x: 0, y: 1}, // up
+        {x: 0, y: -1},  // down
         {x: -1, y: 0}, // left
         {x: 1, y: 0},  // right
       ];

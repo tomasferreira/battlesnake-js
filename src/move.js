@@ -322,8 +322,8 @@ const baseMoveScores = (grid, self) => {
   const head = self.body[0];
   let scores = [0, 0, 0, 0];
   // get score for each direction
-  scores[keys.UP] += baseScoreForBoardPosition(head.x, head.y - 1, grid);
-  scores[keys.DOWN] += baseScoreForBoardPosition(head.x, head.y + 1, grid);
+  scores[keys.UP] += baseScoreForBoardPosition(head.x, head.y + 1, grid);
+  scores[keys.DOWN] += baseScoreForBoardPosition(head.x, head.y - 1, grid);
   scores[keys.LEFT] += baseScoreForBoardPosition(head.x - 1, head.y, grid);
   scores[keys.RIGHT] += baseScoreForBoardPosition(head.x + 1, head.y, grid);
   if (params.DEBUG) log.debug(`Base move scores: {up: ${scores[keys.UP]}, down: ${scores[keys.DOWN]}, left: ${scores[keys.LEFT]}, right: ${scores[keys.RIGHT]}}`);
@@ -337,25 +337,25 @@ const baseScoreForBoardPosition = (x, y, grid) => {
     if (search.outOfBounds({ x: x, y: y }, grid)) return params.FORGET_ABOUT_IT;
     // types of spaces
     switch (grid[y][x]) {
-    case keys.SPACE:
-    case keys.TAIL:
-    case keys.FUTURE_2:
-      return params.BASE_SPACE;
-    case keys.FOOD:
-      return params.BASE_FOOD;
-    case keys.KILL_ZONE:
-      return params.BASE_KILL_ZONE * params.KILL_ZONE_BASE_MOVE_MULTIPLIER;
-    case keys.WALL_NEAR:
-      return params.BASE_WALL_NEAR * params.WALL_NEAR_BASE_MOVE_MULTIPLIER;
-    case keys.WARNING:
-      return params.BASE_WARNING;
-    case keys.SMALL_DANGER:
-      return params.BASE_SMALL_DANGER;
-    case keys.DANGER:
-      return params.BASE_DANGER;
+      case keys.SPACE:
+      case keys.TAIL:
+      case keys.FUTURE_2:
+        return params.BASE_SPACE;
+      case keys.FOOD:
+        return params.BASE_FOOD;
+      case keys.KILL_ZONE:
+        return params.BASE_KILL_ZONE * params.KILL_ZONE_BASE_MOVE_MULTIPLIER;
+      case keys.WALL_NEAR:
+        return params.BASE_WALL_NEAR * params.WALL_NEAR_BASE_MOVE_MULTIPLIER;
+      case keys.WARNING:
+        return params.BASE_WARNING;
+      case keys.SMALL_DANGER:
+        return params.BASE_SMALL_DANGER;
+      case keys.DANGER:
+        return params.BASE_DANGER;
       // default includes SNAKE_BODY, ENEMY_HEAD and YOUR_BODY
-    default:
-      return params.FORGET_ABOUT_IT;
+      default:
+        return params.FORGET_ABOUT_IT;
     }
   }
   catch (e) { log.error(`ex in move.baseScoreForBoardPosition: ${e}`); }
@@ -366,14 +366,14 @@ const validMove = (direction, pos, grid) => {
   try {
     if (search.outOfBounds(pos, grid)) return false;
     switch (direction) {
-    case keys.UP:
-      return grid[pos.y - 1][pos.x] <= keys.DANGER;
-    case keys.DOWN:
-      return grid[pos.y + 1][pos.x] <= keys.DANGER;
-    case keys.LEFT:
-      return grid[pos.y][pos.x - 1] <= keys.DANGER;
-    case keys.RIGHT:
-      return grid[pos.y][pos.x + 1] <= keys.DANGER;
+      case keys.UP:
+        return grid[pos.y + 1][pos.x] <= keys.DANGER;
+      case keys.DOWN:
+        return grid[pos.y - 1][pos.x] <= keys.DANGER;
+      case keys.LEFT:
+        return grid[pos.y][pos.x - 1] <= keys.DANGER;
+      case keys.RIGHT:
+        return grid[pos.y][pos.x + 1] <= keys.DANGER;
     }
     return false;
   }
@@ -384,30 +384,30 @@ const validMove = (direction, pos, grid) => {
 const suggestMove = (direction, pos, grid) => {
   try {
     switch (direction) {
-    // if up, check right, left, down
-    case keys.UP:
-      if (validMove(keys.RIGHT, pos, grid)) return keys.RIGHT;
-      else if (validMove(keys.LEFT, pos, grid)) return keys.LEFT;
-      else if (validMove(keys.DOWN, pos, grid)) return keys.DOWN;
-      return direction;
+      // if up, check right, left, down
+      case keys.UP:
+        if (validMove(keys.RIGHT, pos, grid)) return keys.RIGHT;
+        else if (validMove(keys.LEFT, pos, grid)) return keys.LEFT;
+        else if (validMove(keys.DOWN, pos, grid)) return keys.DOWN;
+        return direction;
       // if down, check left, right, up
-    case keys.DOWN:
-      if (validMove(keys.LEFT, pos, grid)) return keys.LEFT;
-      else if (validMove(keys.RIGHT, pos, grid)) return keys.RIGHT;
-      else if (validMove(keys.UP, pos, grid)) return keys.UP;
-      return direction;
+      case keys.DOWN:
+        if (validMove(keys.LEFT, pos, grid)) return keys.LEFT;
+        else if (validMove(keys.RIGHT, pos, grid)) return keys.RIGHT;
+        else if (validMove(keys.UP, pos, grid)) return keys.UP;
+        return direction;
       // if left, check up, down, right
-    case keys.LEFT:
-      if (validMove(keys.UP, pos, grid)) return keys.UP;
-      else if (validMove(keys.DOWN, pos, grid)) return keys.DOWN;
-      else if (validMove(keys.RIGHT, pos, grid)) return keys.RIGHT;
-      return direction;
+      case keys.LEFT:
+        if (validMove(keys.UP, pos, grid)) return keys.UP;
+        else if (validMove(keys.DOWN, pos, grid)) return keys.DOWN;
+        else if (validMove(keys.RIGHT, pos, grid)) return keys.RIGHT;
+        return direction;
       // if right, check down, up, left
-    case keys.RIGHT:
-      if (validMove(keys.DOWN, pos, grid)) return keys.DOWN;
-      else if (validMove(keys.UP, pos, grid)) return keys.UP;
-      else if (validMove(keys.LEFT, pos, grid)) return keys.LEFT;
-      return direction;
+      case keys.RIGHT:
+        if (validMove(keys.DOWN, pos, grid)) return keys.DOWN;
+        else if (validMove(keys.UP, pos, grid)) return keys.UP;
+        else if (validMove(keys.LEFT, pos, grid)) return keys.LEFT;
+        return direction;
     }
   }
   catch (e) { log.error(`ex in move.suggestMove: ${e}`); }

@@ -15,7 +15,8 @@
   "homepage": "https://github.com/BattlesnakeOfficial/starter-snake-javascript#readme",
   "dependencies": {
     "express": "^4.17.1",
-    "fs": "^0.0.1-security"
+    "fs": "^0.0.1-security",
+    "morgan": "^1.10.0"
   },
   "devDependencies": {
     "eslint": "^8.9.0",
