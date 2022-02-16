@@ -224,7 +224,7 @@ const buildMove = (grid, data, move, moveScore = 0) => {
     let uniqueLargestDistanceMove = false;
     for (let m = 0; m < 4; m++) {
       const currentDistance = search.distanceToEnemy(m, grid, data, keys.ENEMY_HEAD);
-      log.debug(`Distance to closest dangerous snake for move ${keys.DIRECTION[m]} is ${currentDistance}`);
+      if(params.DEBUG) log.debug(`Distance to closest dangerous snake for move ${keys.DIRECTION[m]} is ${currentDistance}`);
       if (enemyDistances[m] < currentDistance) {
         enemyDistances[m] = currentDistance;
         if (largestDistance === currentDistance) uniqueLargestDistanceMove = false;
@@ -251,7 +251,7 @@ const buildMove = (grid, data, move, moveScore = 0) => {
     let uniqueSmallestDistanceMove = false;
     for (let m = 0; m < 4; m++) {
       const currentDistance = search.distanceToEnemy(m, grid, data, keys.KILL_ZONE);
-      log.debug(`Distance to closest killable snake for move ${keys.DIRECTION[m]} is ${currentDistance}`);
+      if(params.DEBUG) log.debug(`Distance to closest killable snake for move ${keys.DIRECTION[m]} is ${currentDistance}`);
       if (currentDistance === 0) continue;
       if (enemyDistances[m] > currentDistance) {
         enemyDistances[m] = currentDistance;
@@ -279,7 +279,7 @@ const buildMove = (grid, data, move, moveScore = 0) => {
     let uniqueLargestDistanceMove = false;
     for (let m = 0; m < 4; m++) {
       const currentDistance = search.distanceToCenter(m, s.location(data), grid, data);
-      log.debug(`Distance from wall for move ${keys.DIRECTION[m]} is ${currentDistance}`);
+      if(params.DEBUG) log.debug(`Distance from wall for move ${keys.DIRECTION[m]} is ${currentDistance}`);
       // if (currentDistance === 0) continue;
       if (centerDistances[m] < currentDistance) {
         centerDistances[m] = currentDistance;
@@ -292,7 +292,7 @@ const buildMove = (grid, data, move, moveScore = 0) => {
       }
     }
     if (uniqueLargestDistanceMove) {
-      log.debug(`Add ${params.WALL_DISTANCE} to move ${keys.DIRECTION[largestDistanceMove]} for farther from wall`);
+      if(params.DEBUG) log.debug(`Add ${params.WALL_DISTANCE} to move ${keys.DIRECTION[largestDistanceMove]} for farther from wall`);
       scores[largestDistanceMove] += params.WALL_DISTANCE;
     }
   }

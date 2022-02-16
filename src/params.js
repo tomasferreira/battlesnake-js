@@ -1,8 +1,8 @@
 module.exports = {
   // logging
-  DEBUG: true,
+  DEBUG: false,
   STATUS: true,
-  DEBUG_MAPS: true,
+  DEBUG_MAPS: false,
   CONSOLE_LOG: true,
 
   // basic game params

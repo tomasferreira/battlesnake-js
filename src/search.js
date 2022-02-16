@@ -58,17 +58,17 @@ const fill = (direction, grid, data, constraints = []) => {
   let current = you.body[0];
   let givenMovePos = {x: current.x, y: current.y};
   switch(direction) {
-  case keys.UP:
-    givenMovePos.y += 1;
-    break;
-  case keys.DOWN:
-    givenMovePos.y -= 1;
-    break;
-  case keys.LEFT:
-    givenMovePos.x -= 1;
-    break;
-  case keys.RIGHT:
-    givenMovePos.x += 1;
+    case keys.UP:
+      givenMovePos.y += 1;
+      break;
+    case keys.DOWN:
+      givenMovePos.y -= 1;
+      break;
+    case keys.LEFT:
+      givenMovePos.x -= 1;
+      break;
+    case keys.RIGHT:
+      givenMovePos.x += 1;
   }
   addToOpen(givenMovePos);
   addToClosed(current);
@@ -86,25 +86,25 @@ const fill = (direction, grid, data, constraints = []) => {
     const nextMove = removeFromOpen();
     addToClosed(nextMove);
     switch(inGrid(nextMove, grid)) {
-    case keys.ENEMY_HEAD:
-      enemyHeads++;
-      break;
-    case keys.TAIL:
-      tails++;
-      break;
-    case keys.KILL_ZONE:
-      killZones++;
-      break;
-    case keys.FOOD:
-      foods++;
-      break;
-    case keys.WALL_NEAR:
-      walls++;
-      break;
-    case keys.WARNING:
-      warnings++;
-      break;
-    default:
+      case keys.ENEMY_HEAD:
+        enemyHeads++;
+        break;
+      case keys.TAIL:
+        tails++;
+        break;
+      case keys.KILL_ZONE:
+        killZones++;
+        break;
+      case keys.FOOD:
+        foods++;
+        break;
+      case keys.WALL_NEAR:
+        walls++;
+        break;
+      case keys.WARNING:
+        warnings++;
+        break;
+      default:
     }
     area++;
 
@@ -787,14 +787,14 @@ const validMove = (direction, pos, grid) => {
 
 const applyMoveToPos = (move, pos) => {
   switch (move) {
-  case keys.UP:
-    return {x: pos.x, y: pos.y + 1};
-  case keys.DOWN:
-    return {x: pos.x, y: pos.y - 1};
-  case keys.LEFT:
-    return {x: pos.x - 1, y: pos.y};
-  case keys.RIGHT:
-    return {x: pos.x + 1, y: pos.y};
+    case keys.UP:
+      return {x: pos.x, y: pos.y + 1};
+    case keys.DOWN:
+      return {x: pos.x, y: pos.y - 1};
+    case keys.LEFT:
+      return {x: pos.x - 1, y: pos.y};
+    case keys.RIGHT:
+      return {x: pos.x + 1, y: pos.y};
   }
   return {x: 0, y: 0};
 };
