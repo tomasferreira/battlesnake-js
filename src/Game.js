@@ -7,6 +7,7 @@ class Game {
     this.turn = 0;
     this.report;
     this.opponents = [];
+    this.gameType = gameState.game.ruleset.name;
 
     gameState.board.snakes.forEach(snake => {
       if (snake.id != gameState.you.id) {
