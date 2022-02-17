@@ -38,7 +38,7 @@ function start(gameState) {
     slowestMove = 0;
     log.status('Snakes playing this game are:');
     try {
-      gameState.board.snakes.forEach(({ name}) => {
+      gameState.board.snakes.forEach(({ name }) => {
         log.status(name);
       });
     }
@@ -56,6 +56,7 @@ function end(gameState) {
   log.status(`\nSlowest move ${slowestMove} took ${slowest}ms.`);
   // write logs for this game to file
   log.writeLogs(gameState);
+  console.log(report(Object.values(games)));
 }
 
 function move(gameState) {
