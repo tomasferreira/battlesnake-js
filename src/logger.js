@@ -58,11 +58,11 @@ const error = (message, turn = null) => {
 };
 const status = message => {
   log += `${message}\n`;
-  if (p.CONSOLE_LOG) console.log(`${message}`);
+  if (p.CONSOLE_LOG && p.STATUS) console.log(`${message}`);
 };
 const debug = message => {
   log += `DEBUG: ${message}\n`;
-  if (p.CONSOLE_LOG) console.log(`DEBUG: ${message}`);
+  if (p.CONSOLE_LOG && p.DEBUG) console.log(`DEBUG: ${message}`);
 };
 
 module.exports = {

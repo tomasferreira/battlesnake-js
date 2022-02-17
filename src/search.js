@@ -135,14 +135,14 @@ const fill = (direction, grid, data, constraints = []) => {
     score = Math.floor(score / 2);
   }
 
-  if (params.DEBUG) log.debug(`Score in fill: ${score} for move ${keys.DIRECTION[direction]}. Area: ${area}`);
+  log.debug(`Score in fill: ${score} for move ${keys.DIRECTION[direction]}. Area: ${area}`);
   return score;
 };
 
 // a* pathfinding algorithm that will find the shortest path from current head
 // location to a given destination
 const astar = (grid, data, destination, searchType = keys.FOOD, alternateStartPos = null) => {
-  if (params.STATUS) log.status('Calculating path (astar)...');
+  log.status('Calculating path (astar)...');
   // init search fields
   const searchScores = buildAstarGrid(grid);
   let openSet = [];
@@ -152,7 +152,7 @@ const astar = (grid, data, destination, searchType = keys.FOOD, alternateStartPo
   const start = (alternateStartPos === null) ? s.location(data) : alternateStartPos;
   // on first few moves, point to closest food no matter what
   if (data.turn < params.INITIAL_FEEDING) {
-    if (params.DEBUG) log.debug('Within initial feeding, overriding move with closest food.');
+    log.debug('Within initial feeding, overriding move with closest food.');
     destination = t.closestFood(grid, start);
     searchType = keys.FOOD;
   }
@@ -161,7 +161,7 @@ const astar = (grid, data, destination, searchType = keys.FOOD, alternateStartPo
     destination = s.tailLocation(data);
     searchType = keys.TAIL;
   }
-  if (params.DEBUG) log.debug(`astar destination: ${keys.TYPE[searchType]}, ${pairToString(destination)}`);
+  log.debug(`astar destination: ${keys.TYPE[searchType]}, ${pairToString(destination)}`);
   openSet.push(start);
   // while the open set is not empty keep searching
   while (openSet.length) {
@@ -177,21 +177,21 @@ const astar = (grid, data, destination, searchType = keys.FOOD, alternateStartPo
     });
     // check if found destination
     if (sameCell(lowestCell, destination)) {
-      if (params.STATUS) log.status('Found a path!');
+      log.status('Found a path!');
       // if (p.DEBUG_MAPS) {
       //   log.debug("astar grid after search success:");
       //   printFScores(astarGrid);
       // }
       // re-trace path back to origin to find optimal next move
       let tempCell = lowestCell;
-      if (params.DEBUG) log.debug(`astar start pos: ${pairToString(start)}`);
+      log.debug(`astar start pos: ${pairToString(start)}`);
       while (
         searchScores[tempCell.y][tempCell.x].previous.x != start.x ||
         searchScores[tempCell.y][tempCell.x].previous.y != start.y
       ) {
         tempCell = searchScores[tempCell.y][tempCell.x].previous;
       }
-      if (params.DEBUG) log.debug(`astar next move: ${pairToString(tempCell)}`);
+      log.debug(`astar next move: ${pairToString(tempCell)}`);
       return calcDirection(start, tempCell);
     }
     // else continue searching
@@ -209,7 +209,7 @@ const astar = (grid, data, destination, searchType = keys.FOOD, alternateStartPo
       const neighbor = currentNeighbors[n];
       let neighborCell = searchScores[neighbor.y][neighbor.x];
       if (sameCell(neighbor, destination)) {
-        if (params.STATUS) log.status('Found a path (neighbor)');
+        log.status('Found a path (neighbor)');
         neighborCell.previous = current;
         // if (p.DEBUG_MAPS) {
         //   log.debug("astar grid after search success:");
@@ -217,14 +217,14 @@ const astar = (grid, data, destination, searchType = keys.FOOD, alternateStartPo
         // }
         // re-trace path back to origin to find optimal next move
         let temp = neighbor;
-        if (params.DEBUG) log.debug(`astar start pos: ${pairToString(start)}`);
+        log.debug(`astar start pos: ${pairToString(start)}`);
         while (
           searchScores[temp.y][temp.x].previous.x != start.x ||
           searchScores[temp.y][temp.x].previous.y != start.y
         ) {
           temp = searchScores[temp.y][temp.x].previous;
         }
-        if (params.DEBUG) log.debug(`astar next move: ${pairToString(temp)}`);
+        log.debug(`astar next move: ${pairToString(temp)}`);
         return calcDirection(start, temp);
       }
       // check if neighbor can be moved to
@@ -257,7 +257,7 @@ const astar = (grid, data, destination, searchType = keys.FOOD, alternateStartPo
   }
   // if reach this point and open set is empty, no path
   if (!openSet.length) {
-    if (params.STATUS) log.status('COULD NOT FIND PATH!');
+    log.status('COULD NOT FIND PATH!');
     // if (p.DEBUG_MAPS) {
     //   localStorage.debug("astar grid after search failure:");
     //   printFScores(searchScores);
@@ -270,14 +270,14 @@ const astar = (grid, data, destination, searchType = keys.FOOD, alternateStartPo
 // preprocess grid to find valuable cells
 const preprocessGrid = (grid, data) => {
   try {
-    if (params.STATUS) log.status('Preprocessing grid.');
+    log.status('Preprocessing grid.');
     if (g.nearPerimeter(s.location(data), grid)) {
-      if (params.DEBUG) log.debug('I am near perimeter.');
+      log.debug('I am near perimeter.');
       const enemyLocations = getEnemyLocations(data);
       let gridCopy = g.copyGrid(grid);
       for (let enemy of enemyLocations) {
         if (g.onPerimeter(enemy, grid)) {
-          if (params.DEBUG) log.debug(`Enemy at ${pairToString(enemy)} is on perimeter`);
+          log.debug(`Enemy at ${pairToString(enemy)} is on perimeter`);
           let result = edgeFillFromEnemyToYou(enemy, gridCopy, grid, data);
           gridCopy = result.grid;
         }
@@ -294,7 +294,7 @@ const edgeFillFromEnemyToYou = (enemy, gridCopy, grid, data) => {
     const yourHead = s.location(data);
     const enemyMoves = getEnemyMoveLocations(enemy, grid);
     for (let enemyMove of enemyMoves) {
-      if (params.DEBUG) log.debug (`Doing enemy edge fill for move @ ${pairToString(enemyMove)}`);
+      log.debug (`Doing enemy edge fill for move @ ${pairToString(enemyMove)}`);
 
       // begin fill search
 
@@ -350,7 +350,7 @@ const edgeFillFromEnemyToYou = (enemy, gridCopy, grid, data) => {
         nextMove = removeFromOpen();
         edgeSpaces.push(nextMove);
         addToClosed(nextMove);
-        if (params.DEBUG) log.debug(`Next move in enemy fill search is ${pairToString(nextMove)}`);
+        log.debug(`Next move in enemy fill search is ${pairToString(nextMove)}`);
 
         // check up
         const nextUp = {x: nextMove.x, y: nextMove.y + 1};
@@ -417,13 +417,13 @@ const edgeFillFromEnemyToYou = (enemy, gridCopy, grid, data) => {
       if (fail) return { grid: gridCopy, move: null };
 
       if (foundMe) {
-        if (params.STATUS) log.status(`Adding ${edgeSpaces.length} killzones for enemy near ${pairToString(enemy)}`);
+        log.status(`Adding ${edgeSpaces.length} killzones for enemy near ${pairToString(enemy)}`);
         for (let space of edgeSpaces) {
           gridCopy[space.y][space.x] = keys.KILL_ZONE;
         }
       }
 
-      if (params.DEBUG && params.DEBUG_MAPS) {
+      if(params.DEBUG_MAPS) {
         log.debug('Grid after edge fill search:');
         g.printGrid(gridCopy);
       }
