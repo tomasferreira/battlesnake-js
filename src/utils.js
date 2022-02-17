@@ -95,23 +95,34 @@ function prepareReport(gameState, game) {
 }
 
 function report(games) {
-  const gamesWon = games.filter(g => g.won);
-  const gamesLost = games.filter(g => !g.won);
-  const winPercent = Math.floor(gamesWon.length / games.length * 100);
+  let rep = {};
+  rep.gamesWon = games.filter(g => g.won).length;
+  rep.gamesLost = games.filter(g => !g.won).length;
+  rep.winPercent = Math.floor(rep.gamesWon / games.length * 100);
 
-  // First, show the win rate
-  let body = `After ${games.length} games, you have ${gamesWon.length} wins for rate of ${winPercent}%`;
+  rep.standardGames = games.filter(g => g.gameType === 'standard').length;
+  rep.standardGamesWon = games.filter(g => g.won && g.gameType === 'standard').length;
+  rep.standardGamesLost = games.filter(g => !g.won && g.gameType === 'standard').length;
+
+  rep.royaleGames = games.filter(g => g.gameType === 'royale').length;
+  rep.royaleGamesWon = games.filter(g => g.won && g.gameType === 'royale').length;
+  rep.royaleGamesLost = games.filter(g => !g.won && g.gameType === 'royale').length;
+
+  rep.duelGames = games.filter(g => g.gameType === 'duel').length;
+  rep.duelGamesWon = games.filter(g => g.won && g.gameType === 'duel').length;
+  rep.duelGamesLost = games.filter(g => !g.won && g.gameType === 'duel').length;
 
   // Next, find the people who defeated me the most
-  const winnersNames = gamesLost.map((game) => game.winnerName);
-  const rankedWinners = winnersNames.sort((a, b) => {
-    winnersNames.filter(w => w === a).length - winnersNames.filter(w => w === b).length;
-  });
+  // const winnersNames = gamesLost.map((game) => game.winnerName);
+  // const rankedWinners = winnersNames.sort((a, b) => {
+  //   winnersNames.filter(w => w === a).length - winnersNames.filter(w => w === b).length;
+  // });
 
-  const highestWinner = rankedWinners[0];
-  const highestWinnerCount = rankedWinners.filter(w => w === highestWinner).length;
-  body += `\nYou lost the most to ${highestWinner} (${highestWinnerCount} times)`;
-  return body;
+  // const highestWinner = rankedWinners[0];
+  // const highestWinnerCount = rankedWinners.filter(w => w === highestWinner).length;
+  // body += `\nYou lost the most to ${highestWinner} (${highestWinnerCount} times)`;
+  // return body;
+  return rep;
 }
 
 module.exports = {

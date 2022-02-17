@@ -14,6 +14,9 @@ class Game {
         this.opponents.push(snake.name);
       }
     });
+    if(this.opponents.length === 1) {
+      this.gameType = 'duel';
+    }
   }
 }
 
