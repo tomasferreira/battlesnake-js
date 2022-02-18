@@ -17,6 +17,9 @@ function prepareReport(gameState, game) {
   game.winnerName = winnerName;
   game.won = won;
   game.turns = turns;
+
+  game.slowestMove = game.player.slowestMove;
+  game.slowestTurn = game.player.slowestTurn;
 }
 
 function createEmptyReport() {
@@ -26,6 +29,8 @@ function createEmptyReport() {
   rep.totalGamesWon = 0;
   rep.totalGamesLost = 0;
   rep.totalWinPercent = 0;
+
+  rep.slowestMove = 0;
 
   rep.standardGames = 0;
   rep.standardGamesWon = 0;
@@ -48,7 +53,7 @@ function createEmptyReport() {
 function report(game) {
 
   // eslint-disable-next-line no-undef
-  const path = `${__dirname}/../report/games.json`;
+  const path = `${__dirname}/../report/report.json`;
   let rep;
 
   try {
@@ -65,6 +70,8 @@ function report(game) {
   else rep.totalGamesLost++;
 
   rep.totalWinPercent = Math.floor(rep.totalGamesWon / rep.totalGames * 100);
+
+  if(game.slowestMove > rep.slowestMove) rep.slowestMove = game.slowestMove;
 
   if (game.gameType === 'standard') {
     rep.standardGames++;
@@ -102,7 +109,7 @@ function report(game) {
 
 function saveReport(reportObj) {
   // eslint-disable-next-line no-undef
-  const path = `${__dirname}/../report/games.json`;
+  const path = `${__dirname}/../report/report.json`;
 
   jsonfile.writeFile(path, reportObj, { spaces: 2 }, function (e) {
     if (e) log.error(`ex in reporter.saveReport: ${e}`);

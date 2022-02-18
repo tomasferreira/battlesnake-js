@@ -10,7 +10,6 @@ class Game {
     this.slowestTurn = 0;
     this.slowestMove = 0;
 
-
     gameState.board.snakes.forEach(snake => {
       if (snake.id != gameState.you.id) {
         this.opponents.push(snake.name);

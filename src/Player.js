@@ -7,13 +7,16 @@ const log = require('./logger');
 const search = require('./search');
 
 class Player {
-  move(data, slowest, slowestMove) {
+  constructor() {
+    this.slowestTurn = 0;
+    this.slowestMove = 0;
+  }
+
+  move(data) {
 
     let startTime;
-    if (p.STATUS) {
-      let date = new Date();
-      startTime = date.getMilliseconds();
-    }
+    let date = new Date();
+    startTime = date.getMilliseconds();
 
     const health = data.you.health;
     const turn = data.turn;
@@ -56,15 +59,13 @@ class Player {
       catch (e) { log.error(`ex in main.backupPlan: ${e}`, turn); }
     }
 
-    if (p.STATUS) {
-      let date2 = new Date();
-      let endTime = date2.getMilliseconds();
-      if (endTime - startTime > slowest) {
-        slowest = endTime - startTime;
-        slowestMove = data.turn;
-      }
-      log.status(`Move ${data.turn} took ${endTime - startTime}ms.`);
+    let date2 = new Date();
+    let endTime = date2.getMilliseconds();
+    if (endTime - startTime > this.slowestMove) {
+      this.slowestMove = endTime - startTime;
+      this.slowestTurn = data.turn;
     }
+    log.status(`Move ${data.turn} took ${endTime - startTime}ms.`);
     return {
       move: move ? keys.DIRECTION[move] : keys.DIRECTION[keys.UP]
     };
