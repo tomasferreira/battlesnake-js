@@ -50,6 +50,7 @@ function end(gameState) {
   console.log(reportObj);
   saveReport(reportObj);
   log.writeLogs(gameState);
+  
   delete games[gameID];
 }
 
