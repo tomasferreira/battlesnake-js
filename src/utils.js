@@ -76,62 +76,11 @@ function checkSnakes(head, snakes, moves) {
   });
 }
 
-function prepareReport(gameState, game) {
-  let winnerName = false;
-  let won = false;
-  let turns = gameState.turn;
-
-  if (gameState.board.snakes.length !== 0) {
-    const winningSnake = gameState.board.snakes[0];
-    winnerName = gameState.board.snakes[0].name;
-    if (winningSnake.id === gameState.you.id) {
-      won = true;
-    }
-  }
-
-  game.winnerName = winnerName;
-  game.won = won;
-  game.turns = turns;
-}
-
-function report(games) {
-  let rep = {};
-  rep.gamesWon = games.filter(g => g.won).length;
-  rep.gamesLost = games.filter(g => !g.won).length;
-  rep.winPercent = Math.floor(rep.gamesWon / games.length * 100);
-
-  rep.standardGames = games.filter(g => g.gameType === 'standard').length;
-  rep.standardGamesWon = games.filter(g => g.won && g.gameType === 'standard').length;
-  rep.standardGamesLost = games.filter(g => !g.won && g.gameType === 'standard').length;
-
-  rep.royaleGames = games.filter(g => g.gameType === 'royale').length;
-  rep.royaleGamesWon = games.filter(g => g.won && g.gameType === 'royale').length;
-  rep.royaleGamesLost = games.filter(g => !g.won && g.gameType === 'royale').length;
-
-  rep.duelGames = games.filter(g => g.gameType === 'duel').length;
-  rep.duelGamesWon = games.filter(g => g.won && g.gameType === 'duel').length;
-  rep.duelGamesLost = games.filter(g => !g.won && g.gameType === 'duel').length;
-
-  // Next, find the people who defeated me the most
-  // const winnersNames = gamesLost.map((game) => game.winnerName);
-  // const rankedWinners = winnersNames.sort((a, b) => {
-  //   winnersNames.filter(w => w === a).length - winnersNames.filter(w => w === b).length;
-  // });
-
-  // const highestWinner = rankedWinners[0];
-  // const highestWinnerCount = rankedWinners.filter(w => w === highestWinner).length;
-  // body += `\nYou lost the most to ${highestWinner} (${highestWinnerCount} times)`;
-  // return body;
-  return rep;
-}
-
 module.exports = {
   distance,
   getDirection,
   checkNeck,
   checkWalls,
   checkBody,
-  checkSnakes,
-  prepareReport,
-  report
+  checkSnakes
 };

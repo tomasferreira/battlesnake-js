@@ -1,18 +1,11 @@
 const p = require('./params');
 const log = require('./logger');
 const Game = require('./Game');
-const { prepareReport, report } = require('./utils');
+const { prepareReport, report, saveReport } = require('./reporter');
 const games = {};
 
-let slowest = 0;
-let slowestMove = 0;
-
 function info() {
-  if (Object.entries(games).length > 0) {
-    console.log(report(Object.values(games)));
-  } else {
-    console.log('INFO');
-  }
+  console.log('INFO');
   const response = {
     apiversion: '1',
     author: 'tomasvcferreira',
@@ -50,13 +43,17 @@ function start(gameState) {
 function end(gameState) {
   let gameID = gameState.game.id;
   console.log(`${gameID} END\n`);
+
   prepareReport(gameState, games[gameID]);
+  let reportObj = report(games[gameID]); 
   console.log(games[gameID]);
 
   log.status(`\nSlowest move ${slowestMove} took ${slowest}ms.`);
   // write logs for this game to file
+  console.log(reportObj);
+  saveReport(reportObj);
   log.writeLogs(gameState);
-  console.log(report(Object.values(games)));
+  delete games[gameID];
 }
 
 function move(gameState) {
