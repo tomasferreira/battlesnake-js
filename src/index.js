@@ -1,12 +1,10 @@
 const express = require('express');
-const logger = require('morgan');
 const { info, start, move, end } = require('./main');
 
 const app = express();
 app.enable('verbose errors');
 
 app.use(express.json());
-app.use(logger('dev'));
 // eslint-disable-next-line no-undef
 app.use('/logs', express.static(__dirname + '/logs'));
 app.use(function (req, res, next) {
