@@ -179,7 +179,7 @@ const buildMove = (grid, data, move, moveScore = 0) => {
       }
     } else {
       // get base next move scores
-      log.status(`Adding moveScore ${moveScore} to move ${keys.DIRECTION[move]}`);
+      log.debug(`Adding moveScore ${moveScore} to move ${keys.DIRECTION[move]}`);
       scores[move] += moveScore;
       log.debug(`Move scores: ${scoresToString(scores)}`);
     }

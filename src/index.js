@@ -10,7 +10,7 @@ app.use(logger('dev'));
 // eslint-disable-next-line no-undef
 app.use('/logs', express.static(__dirname + '/logs'));
 app.use(function (req, res, next) {
-  res.set('Server', 'BattlesnakeOfficial/starter-snake-javascript');
+  res.set('Server', 'tomasferreira/battlesnake-js');
   next();
 });
 

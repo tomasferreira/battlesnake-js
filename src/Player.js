@@ -21,7 +21,7 @@ class Player {
     const health = data.you.health;
     const turn = data.turn;
 
-    if (p.STATUS) log.status(`\n\n####################################### MOVE ${data.turn}`);
+    log.status(`\n\n####################################### MOVE ${data.turn} - ${data.game.id}`);
 
     let grid = [];
     try {
@@ -31,7 +31,7 @@ class Player {
     catch (e) { log.error(`ex in main.buildGrid: ${e}`, turn); }
 
     let move = null;
-    if (p.DEBUG) log.status(`biggest snake ? ${s.biggestSnake(data)}`);
+    log.status(`biggest snake ? ${s.biggestSnake(data)}`);
 
     const minHealth = p.SURVIVAL_MIN - Math.floor(data.turn / p.LONG_GAME_ENDURANCE);
     // if you are hungry or small you gotta eat
