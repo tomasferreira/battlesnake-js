@@ -417,7 +417,7 @@ const edgeFillFromEnemyToYou = (enemy, gridCopy, grid, data) => {
       if (fail) return { grid: gridCopy, move: null };
 
       if (foundMe) {
-        log.status(`Adding ${edgeSpaces.length} killzones for enemy near ${pairToString(enemy)}`);
+        log.debug(`Adding ${edgeSpaces.length} killzones for enemy near ${pairToString(enemy)}`);
         for (let space of edgeSpaces) {
           gridCopy[space.y][space.x] = keys.KILL_ZONE;
         }
