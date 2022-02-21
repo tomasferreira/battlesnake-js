@@ -1,0 +1,19 @@
+{
+  "totalGames": 2,
+  "totalGamesWon": 0,
+  "totalGamesLost": 2,
+  "totalWinPercent": 0,
+  "slowestMove": 27,
+  "standardGames": 0,
+  "standardGamesWon": 0,
+  "standardGamesLost": 0,
+  "stadardGamesWinPercent": 0,
+  "royaleGames": 0,
+  "royaleGamesWon": 0,
+  "royaleGamesLost": 0,
+  "royaleGamesWinPercent": 0,
+  "duelGames": 0,
+  "duelGamesWon": 0,
+  "duelGamesLost": 0,
+  "duelGamesWinPercent": 0
+}
