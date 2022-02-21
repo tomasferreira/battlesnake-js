@@ -161,7 +161,7 @@ const astar = (grid, data, destination, searchType = keys.FOOD, alternateStartPo
     destination = s.tailLocation(data);
     searchType = keys.TAIL;
   }
-  log.debug(`astar destination: ${keys.TYPE[searchType]}, ${pairToString(destination)}`);
+  log.status(`astar destination: ${keys.TYPE[searchType]}, ${pairToString(destination)}`);
   openSet.push(start);
   // while the open set is not empty keep searching
   while (openSet.length) {
@@ -209,7 +209,7 @@ const astar = (grid, data, destination, searchType = keys.FOOD, alternateStartPo
       const neighbor = currentNeighbors[n];
       let neighborCell = searchScores[neighbor.y][neighbor.x];
       if (sameCell(neighbor, destination)) {
-        log.status('Found a path (neighbor)');
+        log.debug('Found a path (neighbor)');
         neighborCell.previous = current;
         // if (p.DEBUG_MAPS) {
         //   log.debug("astar grid after search success:");
