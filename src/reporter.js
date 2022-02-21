@@ -30,6 +30,9 @@ function createEmptyReport() {
   rep.totalGamesLost = 0;
   rep.totalWinPercent = 0;
 
+  rep.arenaGames = 0;
+  rep.nonArenaGames = 0;
+
   rep.slowestMove = 0;
 
   rep.standardGames = 0;
@@ -93,6 +96,9 @@ function report(game) {
     else rep.duelGamesLost++;
     rep.duelGamesWinPercent = Math.floor(rep.duelGamesWon / rep.duelGames * 100);
   }
+
+  if(game.source == 'arena') rep.arenaGames++;
+  else rep.nonArenaGames++;
 
   // Next, find the people who defeated me the most
   // const winnersNames = gamesLost.map((game) => game.winnerName);
