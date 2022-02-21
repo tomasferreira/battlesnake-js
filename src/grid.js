@@ -191,7 +191,7 @@ const copyGrid = (grid) => {
 };
 
 // test if cells are the same
-const sameCell = (a, b) => a.x === b.x && a.y === b.y;
+// const sameCell = (a, b) => a.x === b.x && a.y === b.y;
 
 // check if space is out of bounds
 const outOfBounds = (pos, grid) => {

@@ -374,38 +374,38 @@ const validMove = (direction, pos, grid) => {
 };
 
 // if move is no good, suggest a similar move that is valid
-const suggestMove = (direction, pos, grid) => {
-  try {
-    switch (direction) {
-      // if up, check right, left, down
-      case keys.UP:
-        if (validMove(keys.RIGHT, pos, grid)) return keys.RIGHT;
-        else if (validMove(keys.LEFT, pos, grid)) return keys.LEFT;
-        else if (validMove(keys.DOWN, pos, grid)) return keys.DOWN;
-        return direction;
-      // if down, check left, right, up
-      case keys.DOWN:
-        if (validMove(keys.LEFT, pos, grid)) return keys.LEFT;
-        else if (validMove(keys.RIGHT, pos, grid)) return keys.RIGHT;
-        else if (validMove(keys.UP, pos, grid)) return keys.UP;
-        return direction;
-      // if left, check up, down, right
-      case keys.LEFT:
-        if (validMove(keys.UP, pos, grid)) return keys.UP;
-        else if (validMove(keys.DOWN, pos, grid)) return keys.DOWN;
-        else if (validMove(keys.RIGHT, pos, grid)) return keys.RIGHT;
-        return direction;
-      // if right, check down, up, left
-      case keys.RIGHT:
-        if (validMove(keys.DOWN, pos, grid)) return keys.DOWN;
-        else if (validMove(keys.UP, pos, grid)) return keys.UP;
-        else if (validMove(keys.LEFT, pos, grid)) return keys.LEFT;
-        return direction;
-    }
-  }
-  catch (e) { log.error(`ex in move.suggestMove: ${e}`); }
-  return direction;
-};
+// const suggestMove = (direction, pos, grid) => {
+//   try {
+//     switch (direction) {
+//       // if up, check right, left, down
+//       case keys.UP:
+//         if (validMove(keys.RIGHT, pos, grid)) return keys.RIGHT;
+//         else if (validMove(keys.LEFT, pos, grid)) return keys.LEFT;
+//         else if (validMove(keys.DOWN, pos, grid)) return keys.DOWN;
+//         return direction;
+//       // if down, check left, right, up
+//       case keys.DOWN:
+//         if (validMove(keys.LEFT, pos, grid)) return keys.LEFT;
+//         else if (validMove(keys.RIGHT, pos, grid)) return keys.RIGHT;
+//         else if (validMove(keys.UP, pos, grid)) return keys.UP;
+//         return direction;
+//       // if left, check up, down, right
+//       case keys.LEFT:
+//         if (validMove(keys.UP, pos, grid)) return keys.UP;
+//         else if (validMove(keys.DOWN, pos, grid)) return keys.DOWN;
+//         else if (validMove(keys.RIGHT, pos, grid)) return keys.RIGHT;
+//         return direction;
+//       // if right, check down, up, left
+//       case keys.RIGHT:
+//         if (validMove(keys.DOWN, pos, grid)) return keys.DOWN;
+//         else if (validMove(keys.UP, pos, grid)) return keys.UP;
+//         else if (validMove(keys.LEFT, pos, grid)) return keys.LEFT;
+//         return direction;
+//     }
+//   }
+//   catch (e) { log.error(`ex in move.suggestMove: ${e}`); }
+//   return direction;
+// };
 
 // return pair as string
 const pairToString = pair => {

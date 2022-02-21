@@ -718,18 +718,18 @@ const buildAstarGrid = grid => {
 };
 
 // print search grid f scores
-const printFScores = astarGrid => {
-  for (let i = 0; i < astarGrid.length; i++) {
-    let row = '';
-    for (let j = 0; j < astarGrid[0].length; j++) {
-      row +=
-        astarGrid[i][j].f < 10
-          ? '  ' + astarGrid[i][j].f
-          : ' ' + astarGrid[i][j].f;
-    }
-    log.status(row);
-  }
-};
+// const printFScores = astarGrid => {
+//   for (let i = 0; i < astarGrid.length; i++) {
+//     let row = '';
+//     for (let j = 0; j < astarGrid[0].length; j++) {
+//       row +=
+//         astarGrid[i][j].f < 10
+//           ? '  ' + astarGrid[i][j].f
+//           : ' ' + astarGrid[i][j].f;
+//     }
+//     log.status(row);
+//   }
+// };
 
 // cell of search grid to store a* scores
 class Cell {
