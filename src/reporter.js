@@ -28,34 +28,42 @@ function prepareReport(gameState, game, exceptions) {
 function createEmptyReport() {
   let rep = {};
 
-  rep.totalGames = 0;
-  rep.totalGamesWon = 0;
-  rep.totalGamesLost = 0;
-  rep.ties = 0;
-  rep.totalWinPercent = 0;
+  rep.total = {
+    total: 0,
+    won: 0,
+    lost: 0,
+    tied: 0,
+    winPercentage: 0,
+    arenaGames: 0,
+    nonArenaGames: 0,
+    slowestMove: 0,
+    exceptions: 0
+  };
 
-  rep.arenaGames = 0;
-  rep.nonArenaGames = 0;
+  rep.standard = {
+    total: 0,
+    won: 0,
+    lost: 0,
+    tied: 0,
+    winPercentage: 0
+  };
 
-  rep.slowestMove = 0;
+  rep.royale = {
+    total: 0,
+    won: 0,
+    lost: 0,
+    tied: 0,
+    winPercentage: 0
+  };
 
-  rep.standardGames = 0;
-  rep.standardGamesWon = 0;
-  rep.standardGamesLost = 0;
-  rep.stadardGamesWinPercent = 0;
+  rep.duel = {
+    total: 0,
+    won: 0,
+    lost: 0,
+    tied: 0,
+    winPercentage: 0
+  };
 
-  rep.royaleGames = 0;
-  rep.royaleGamesWon = 0;
-  rep.royaleGamesLost = 0;
-  rep.royaleGamesWinPercent = 0;
-
-  rep.duelGames = 0;
-  rep.duelGamesWon = 0;
-  rep.duelGamesLost = 0;
-  rep.duelGamesWinPercent = 0;
-
-  rep.slowestMove = 0;
-  rep.exceptions = 0;
   rep.winners = [];
 
   return rep;
@@ -76,43 +84,44 @@ function report(game) {
     } else if (err) log.error(`ex in reporter.report.readFile: ${err}`);
   }
 
-  rep.totalGames++;
-  if (game.won) rep.totalGamesWon++;
-  else if (game.tie) rep.ties++;
-  else rep.totalGamesLost++;
+  rep.total.total++;
+  if (game.won) rep.total.won++;
+  else if (game.tie) rep.total.tied++;
+  else rep.total.lost++;
 
-  rep.totalWinPercent = Math.floor(rep.totalGamesWon / rep.totalGames * 100);
+  rep.total.winPercentage = Math.floor(rep.total.won / rep.total.total * 100);
 
-  if (game.slowestMove > rep.slowestMove) rep.slowestMove = game.slowestMove;
+  if (game.source == 'arena') rep.total.arenaGames++;
+  else rep.total.nonArenaGames++;
+
+  if (game.slowestMove > rep.total.slowestMove) rep.total.slowestMove = game.slowestMove;
+  rep.total.exceptions = rep.total.exceptions + game.exceptions;
 
   if (game.gameType === 'standard') {
-    rep.standardGames++;
-    if (game.won) rep.standardGamesWon++;
-    else rep.standardGamesLost++;
-    rep.stadardGamesWinPercent = Math.floor(rep.standardGamesWon / rep.standardGames * 100);
+    rep.standard.total++;
+    if (game.won) rep.standard.won++;
+    else if (game.tie) rep.standard.tied++;
+    else rep.standard.lost++;
+    rep.standard.winPercentage = Math.floor(rep.standard.won / rep.standard.total * 100);
   }
 
   if (game.gameType === 'royale') {
-    rep.royaleGames++;
-    if (game.won) rep.royaleGamesWon++;
-    else rep.royaleGamesLost++;
-    rep.royaleGamesWinPercent = Math.floor(rep.royaleGamesWon / rep.royaleGames * 100);
+    rep.royale.total++;
+    if (game.won) rep.royale.won++;
+    else if (game.tie) rep.royale.tied++;
+    else rep.royale.lost++;
+    rep.royale.winPercentage = Math.floor(rep.royale.won / rep.royale.total * 100);
   }
 
   if (game.gameType === 'duel') {
-    rep.duelGames++;
-    if (game.won) rep.duelGamesWon++;
-    else rep.duelGamesLost++;
-    rep.duelGamesWinPercent = Math.floor(rep.duelGamesWon / rep.duelGames * 100);
+    rep.duel.total++;
+    if (game.won) rep.duel.won++;
+    else if (game.tie) rep.duel.tied++;
+    else rep.duel.lost++;
+    rep.duel.winPercentage = Math.floor(rep.duel.won / rep.duel.total * 100);
   }
 
-  if (game.source == 'arena') rep.arenaGames++;
-  else rep.nonArenaGames++;
-
-  if (game.slowestMove > rep.slowestMove) rep.slowestMove = game.slowestMove;
-  rep.exceptions = rep.exceptions + game.exceptions;
-
-  if (!game.tie) {
+  if (!game.won && !game.tied) {
 
     let exists = false;
     rep.winners.forEach(winner => {
