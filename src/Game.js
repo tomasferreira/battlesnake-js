@@ -11,15 +11,8 @@ class Game {
     this.slowestMove = 0;
     this.source = gameState.game.source;
     this.exceptions = 0;
-
-    gameState.board.snakes.forEach(snake => {
-      if (snake.id != gameState.you.id) {
-        this.opponents.push(snake.name);
-      }
-    });
-    if(this.opponents.length === 1 && this.gameType === 'standard') {
-      this.gameType = 'duel';
-    }
+    this.winnerName = '';
+    this.tie = false;
   }
 }
 

@@ -1,4 +1,3 @@
-const p = require('./params');
 const log = require('./logger');
 const Game = require('./Game');
 const { prepareReport, report, saveReport } = require('./reporter');
@@ -24,18 +23,18 @@ function start(gameState) {
 
   // ensure previous game logs are cleared
   log.initGameLogs();
-  if (p.STATUS) {
-    log.status(`####################################### STARTING GAME ${gameState.game.id}`);
-    log.status(`My snake id is ${gameState.you.id}`);
-    log.status('Snakes playing this game are:');
-    try {
-      gameState.board.snakes.forEach(({ name }) => {
-        log.status(name);
-      });
-    }
-    catch (e) { log.error(`ex in main.start.snakenames: ${e}`); }
+  log.status(`####################################### STARTING GAME ${gameState.game.id}`);
+  log.status(`My snake id is ${gameState.you.id}`);
+  log.status('Snakes playing this game are:');
+  try {
+    gameState.board.snakes.forEach(({ name }) => {
+      log.status(name);
+      if (name != gameState.you.name) game.opponents.push(name);
+    });
+    if (game.opponents.length === 1 && game.gameType === 'standard')
+      game.gameType = 'duel';
   }
-
+  catch (e) { log.error(`ex in main.start.snakenames: ${e}`); }
 }
 
 function end(gameState) {
@@ -44,13 +43,13 @@ function end(gameState) {
   let exceptions = log.writeLogs(gameState);
 
   prepareReport(gameState, games[gameID], exceptions);
-  let reportObj = report(games[gameID]); 
+  let reportObj = report(games[gameID]);
   console.log(games[gameID]);
 
   // write logs for this game to file
   console.log(reportObj);
   saveReport(reportObj);
-  
+
   delete games[gameID];
 }
 

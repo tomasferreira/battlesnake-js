@@ -21,6 +21,8 @@ function prepareReport(gameState, game, exceptions) {
   game.slowestMove = game.player.slowestMove;
   game.slowestTurn = game.player.slowestTurn;
   game.exceptions = exceptions;
+  if (gameState.board.snakes.length === 0) game.tie = true;
+  else game.winnerName = gameState.board.snakes[0].name;
 }
 
 function createEmptyReport() {
@@ -29,6 +31,7 @@ function createEmptyReport() {
   rep.totalGames = 0;
   rep.totalGamesWon = 0;
   rep.totalGamesLost = 0;
+  rep.ties = 0;
   rep.totalWinPercent = 0;
 
   rep.arenaGames = 0;
@@ -50,9 +53,10 @@ function createEmptyReport() {
   rep.duelGamesWon = 0;
   rep.duelGamesLost = 0;
   rep.duelGamesWinPercent = 0;
-  
+
   rep.slowestMove = 0;
   rep.exceptions = 0;
+  rep.winners = [];
 
   return rep;
 }
@@ -74,6 +78,7 @@ function report(game) {
 
   rep.totalGames++;
   if (game.won) rep.totalGamesWon++;
+  else if (game.tie) rep.ties++;
   else rep.totalGamesLost++;
 
   rep.totalWinPercent = Math.floor(rep.totalGamesWon / rep.totalGames * 100);
@@ -107,16 +112,30 @@ function report(game) {
   if (game.slowestMove > rep.slowestMove) rep.slowestMove = game.slowestMove;
   rep.exceptions = rep.exceptions + game.exceptions;
 
-  // Next, find the people who defeated me the most
-  // const winnersNames = gamesLost.map((game) => game.winnerName);
-  // const rankedWinners = winnersNames.sort((a, b) => {
-  //   winnersNames.filter(w => w === a).length - winnersNames.filter(w => w === b).length;
-  // });
+  if (!game.tie) {
 
-  // const highestWinner = rankedWinners[0];
-  // const highestWinnerCount = rankedWinners.filter(w => w === highestWinner).length;
-  // body += `\nYou lost the most to ${highestWinner} (${highestWinnerCount} times)`;
-  // return body;
+    let exists = false;
+    rep.winners.forEach(winner => {
+      if (game.winnerName == winner.name) {
+        winner.count++;
+        exists = true;
+      }
+    });
+
+    if (!exists) {
+      rep.winners.push({
+        name: game.winnerName,
+        count: 1
+      });
+    }
+
+    if (rep.winners.length > 1) {
+      rep.winners = rep.winners.sort((a, b) => {
+        return b.count - a.count;
+        // rep.winners.filter(w => w.count === a.count).length - rep.winners.filter(w => w.count === b.count).length;
+      });
+    }
+  }
   return rep;
 }
 
