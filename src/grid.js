@@ -156,9 +156,9 @@ const printGrid = grid => {
     for (let j = 0; j < grid[0].length; j++) {
       row += ` ${keys.MAP[grid[i][j]]}`;
     }
-    log.status(row);
+    log.info(row);
   }
-  log.status(`${xAxis}\n`);
+  log.info(`${xAxis}\n`);
 };
 
 // create a grid filled with a given value

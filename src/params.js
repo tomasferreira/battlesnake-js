@@ -1,9 +1,10 @@
 module.exports = {
   // logging
   DEBUG: false,
-  STATUS: true,
+  INFO: true,
   DEBUG_MAPS: false,
   CONSOLE_LOG: true,
+  LOG_TIMESTAMP: true,
 
   // basic game params
   INITIAL_FEEDING: 10,  // started @  5   +++++++-

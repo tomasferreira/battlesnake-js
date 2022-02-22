@@ -71,7 +71,7 @@ function report(game) {
     rep = jsonfile.readFileSync(path);
   } catch (err) {
     if (err && err.code === 'ENOENT') {
-      log.status('Report file does not exist, creating new.');
+      log.info('Report file does not exist, creating new.');
       rep = createEmptyReport();
     } else if (err) log.error(`ex in reporter.report.readFile: ${err}`);
   }

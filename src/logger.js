@@ -15,8 +15,10 @@ const initGameLogs = () => {
 const writeLogs = (data) => {
   if (p.CONSOLE_LOG) console.log(exLog);
   const gameId = data.game.id;
+  let date = new Date();
+  let timestamp = date.toISOString();
   // eslint-disable-next-line no-undef
-  const path = `${__dirname}/../logs/${gameId}.txt`;
+  const path = `${__dirname}/../logs/${timestamp} - ${gameId}.txt`;
   // append game exeptions to end of log for easy viewing
   log += '\n' + exLog;
   // write log
@@ -33,24 +35,27 @@ const writeLogs = (data) => {
 
 // debug levels
 const error = (message, turn = null) => {
+  if (p.LOG_TIMESTAMP) message = new Date().toISOString() + ': ' + message;
   log += `ERROR: ${message}\n`;
   if (p.CONSOLE_LOG) console.error(`ERROR: ${message}`);
   exLog += `EX ON TURN ${turn != null ? turn : 'none'}: ${message}\n`;
   exceptions++;
 };
-const status = message => {
-  log += `${message}\n`;
-  if (p.CONSOLE_LOG && p.STATUS) console.log(`${message}`);
+const info = message => {
+  if (p.LOG_TIMESTAMP) message = new Date().toISOString() + ': ' + message;
+  log += `INFO: ${message}\n`;
+  if (p.CONSOLE_LOG && p.INFO) console.log(`INFO: ${message}`);
 };
 const debug = message => {
+  if (p.LOG_TIMESTAMP) message = new Date().toISOString() + ': ' + message;
   log += `DEBUG: ${message}\n`;
   if (p.CONSOLE_LOG && p.DEBUG) console.log(`DEBUG: ${message}`);
 };
 
 module.exports = {
-  initGameLogs: initGameLogs,
-  writeLogs: writeLogs,
-  error: error,
-  status: status,
-  debug: debug
+  initGameLogs,
+  writeLogs,
+  error,
+  info,
+  debug
 };

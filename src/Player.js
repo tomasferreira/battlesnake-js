@@ -21,7 +21,7 @@ class Player {
     const health = data.you.health;
     const turn = data.turn;
 
-    log.status(`\n\n####################################### MOVE ${data.turn} - ${data.game.id}`);
+    log.info(`\n\n####################################### MOVE ${data.turn} - ${data.game.id}`);
 
     let grid = [];
     try {
@@ -31,7 +31,7 @@ class Player {
     catch (e) { log.error(`ex in main.buildGrid: ${e}`, turn); }
 
     let move = null;
-    log.status(`biggest snake ? ${s.biggestSnake(data)}`);
+    log.info(`biggest snake ? ${s.biggestSnake(data)}`);
 
     const minHealth = p.SURVIVAL_MIN - Math.floor(data.turn / p.LONG_GAME_ENDURANCE);
 
@@ -70,7 +70,7 @@ class Player {
       this.slowestMove = endTime - startTime;
       this.slowestTurn = data.turn;
     }
-    log.status(`Move ${data.turn} took ${endTime - startTime}ms.`);
+    log.info(`Move ${data.turn} took ${endTime - startTime}ms.`);
     return {
       move: move ? keys.DIRECTION[move] : keys.DIRECTION[keys.UP]
     };

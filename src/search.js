@@ -142,7 +142,7 @@ const fill = (direction, grid, data, constraints = []) => {
 // a* pathfinding algorithm that will find the shortest path from current head
 // location to a given destination
 const astar = (grid, data, destination, searchType = keys.FOOD, alternateStartPos = null) => {
-  log.status('Calculating path (astar)...');
+  log.info('Calculating path (astar)...');
   // init search fields
   const searchScores = buildAstarGrid(grid);
   let openSet = [];
@@ -161,7 +161,7 @@ const astar = (grid, data, destination, searchType = keys.FOOD, alternateStartPo
     destination = s.tailLocation(data);
     searchType = keys.TAIL;
   }
-  log.status(`astar destination: ${keys.TYPE[searchType]}, ${pairToString(destination)}`);
+  log.info(`astar destination: ${keys.TYPE[searchType]}, ${pairToString(destination)}`);
   openSet.push(start);
   // while the open set is not empty keep searching
   while (openSet.length) {
@@ -177,7 +177,7 @@ const astar = (grid, data, destination, searchType = keys.FOOD, alternateStartPo
     });
     // check if found destination
     if (sameCell(lowestCell, destination)) {
-      log.status('Found a path!');
+      log.info('Found a path!');
       // if (p.DEBUG_MAPS) {
       //   log.debug("astar grid after search success:");
       //   printFScores(astarGrid);
@@ -257,7 +257,7 @@ const astar = (grid, data, destination, searchType = keys.FOOD, alternateStartPo
   }
   // if reach this point and open set is empty, no path
   if (!openSet.length) {
-    log.status('COULD NOT FIND PATH!');
+    log.info('COULD NOT FIND PATH!');
     // if (p.DEBUG_MAPS) {
     //   localStorage.debug("astar grid after search failure:");
     //   printFScores(searchScores);
@@ -270,7 +270,7 @@ const astar = (grid, data, destination, searchType = keys.FOOD, alternateStartPo
 // preprocess grid to find valuable cells
 const preprocessGrid = (grid, data) => {
   try {
-    log.status('Preprocessing grid.');
+    log.info('Preprocessing grid.');
     if (g.nearPerimeter(s.location(data), grid)) {
       log.debug('I am near perimeter.');
       const enemyLocations = getEnemyLocations(data);
@@ -727,7 +727,7 @@ const buildAstarGrid = grid => {
 //           ? '  ' + astarGrid[i][j].f
 //           : ' ' + astarGrid[i][j].f;
 //     }
-//     log.status(row);
+//     log.info(row);
 //   }
 // };
 

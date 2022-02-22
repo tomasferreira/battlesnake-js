@@ -15,14 +15,14 @@ const eat = (grid, data) => {
   if (data.turn > params.INITIAL_FEEDING) {
     urgencyScore = Math.round(urgencyScore * params.FEEDING_URGENCY_MULTIPLIER);
   }
-  log.status(`EATING w/ urgency ${urgencyScore}`);
+  log.info(`EATING w/ urgency ${urgencyScore}`);
   let target = null;
   let move = null;
   const gridCopy = g.copyGrid(grid);
   try {
     target = t.closestFood(grid, myHead);
     if (target === null) {
-      log.status('No food was found on board.');
+      log.info('No food was found on board.');
       return buildMove(grid, data, null, 0);
     }
     move = search.astar(grid, data, target, keys.FOOD);
@@ -56,7 +56,7 @@ const eat = (grid, data) => {
 const hunt = (grid, data) => {
   let score = 0;
   let move = null;
-  log.status('HUNTING');
+  log.info('HUNTING');
 
   try {
     move = search.closeAccessableKillZoneFarFromWall(grid, data);
@@ -72,7 +72,7 @@ const hunt = (grid, data) => {
 const lateHunt = (grid, data) => {
   let score = 0;
   let move = null;
-  log.status('HUNTING, LATE GAME');
+  log.info('HUNTING, LATE GAME');
 
   try {
     move = search.closeAccessableFuture2FarFromWall(grid, data);
@@ -87,7 +87,7 @@ const lateHunt = (grid, data) => {
 
 // track own tail
 const killTime = (grid, data) => {
-  log.status('KILLING TIME');
+  log.info('KILLING TIME');
 
   // const fallbackMove = getFallbackMove(grid, data);
   // let move = fallbackMove.move;
@@ -99,7 +99,7 @@ const killTime = (grid, data) => {
 
 const getFallbackMove = (grid, data) => {
   try {
-    log.status('Resorting to fallback move');
+    log.info('Resorting to fallback move');
     // try finding a path to tail first
     let target = s.tailLocation(data);
     let move = search.astar(grid, data, target, keys.TAIL);
@@ -125,7 +125,7 @@ const getFallbackMove = (grid, data) => {
 };
 
 const coil = (grid, data) => {
-  log.status('Trying to coil to save space');
+  log.info('Trying to coil to save space');
   try {
     let tailLocation = s.tailLocation(data);
     let tailDistances = [0, 0, 0, 0];
@@ -188,7 +188,7 @@ const buildMove = (grid, data, move, moveScore = 0) => {
 
   // get flood fill scores for each move
   try {
-    log.status('Performing flood fill searches');
+    log.info('Performing flood fill searches');
     for (let m = 0; m < 4; m++) {
       let gridCopy = g.copyGrid(grid);
       scores[m] += search.fill(m, grid, data);
@@ -290,10 +290,9 @@ const buildMove = (grid, data, move, moveScore = 0) => {
     }
   }
   catch (e) { log.error(`ex in move.buildMove.fartherFromWall: ${e}`, data.turn); }
-  log.debug(`Move scores: ${scoresToString(scores)}`);
+  log.info(`Move scores: ${scoresToString(scores)}`);
 
   const bestMove = highestScoreMove(scores);
-  // previousMove = bestMove;
   return bestMove;
 };
 

@@ -23,12 +23,12 @@ function start(gameState) {
 
   // ensure previous game logs are cleared
   log.initGameLogs();
-  log.status(`####################################### STARTING GAME ${gameState.game.id}`);
-  log.status(`My snake id is ${gameState.you.id}`);
-  log.status('Snakes playing this game are:');
+  log.info(`####################################### STARTING GAME ${gameState.game.id}`);
+  log.info(`My snake id is ${gameState.you.id}`);
+  log.info('Snakes playing this game are:');
   try {
     gameState.board.snakes.forEach(({ name }) => {
-      log.status(name);
+      log.info(name);
       if (name != gameState.you.name) game.opponents.push(name);
     });
     if (game.opponents.length === 1 && game.gameType === 'standard')
