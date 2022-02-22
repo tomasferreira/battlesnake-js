@@ -3,10 +3,12 @@ const p = require('./params');
 
 let log = '';
 let exLog = '############################# EXCEPTIONS\n';
+let exceptions = 0;
 
 const initGameLogs = () => {
   log = '';
   exLog = '############################# EXCEPTIONS\n';
+  exceptions = 0;
 };
 
 // write logs for game to file and update the index of logs
@@ -24,30 +26,9 @@ const writeLogs = (data) => {
     err => {
       if (err) return console.log(`There was an error saving the logs: ${err}`);
       console.log(`The log for game ${gameId} was saved.`);
-      // update index of logs
-      // read current index
-      fs.readFile(
-        // eslint-disable-next-line no-undef
-        `${__dirname}/../logs/index.html`,
-        'utf8',
-        (err, contents) => {
-          // append new entry
-          const newEntry = `<a href="/logs/${gameId}.txt">GAME: ${gameId}</a><br />`;
-          const newIndex = contents + '\n' + newEntry;
-          // write updated index
-          fs.writeFile(
-            // eslint-disable-next-line no-undef
-            `${__dirname}/../logs/index.html`,
-            newIndex,
-            err => {
-              if (err) return console.log(`There was an error saving the new index.html: ${err}`);
-              console.log('The logs index.html was updated');
-            }
-          );
-        }
-      );
     }
   );
+  return exceptions;
 };
 
 // debug levels
@@ -55,6 +36,7 @@ const error = (message, turn = null) => {
   log += `ERROR: ${message}\n`;
   if (p.CONSOLE_LOG) console.error(`ERROR: ${message}`);
   exLog += `EX ON TURN ${turn != null ? turn : 'none'}: ${message}\n`;
+  exceptions++;
 };
 const status = message => {
   log += `${message}\n`;

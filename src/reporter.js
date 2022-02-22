@@ -1,7 +1,7 @@
 const jsonfile = require('jsonfile');
 const log = require('./logger');
 
-function prepareReport(gameState, game) {
+function prepareReport(gameState, game, exceptions) {
   let winnerName = false;
   let won = false;
   let turns = gameState.turn - 1;
@@ -20,6 +20,7 @@ function prepareReport(gameState, game) {
 
   game.slowestMove = game.player.slowestMove;
   game.slowestTurn = game.player.slowestTurn;
+  game.exceptions = exceptions;
 }
 
 function createEmptyReport() {
@@ -49,6 +50,9 @@ function createEmptyReport() {
   rep.duelGamesWon = 0;
   rep.duelGamesLost = 0;
   rep.duelGamesWinPercent = 0;
+  
+  rep.slowestMove = 0;
+  rep.exceptions = 0;
 
   return rep;
 }
@@ -74,7 +78,7 @@ function report(game) {
 
   rep.totalWinPercent = Math.floor(rep.totalGamesWon / rep.totalGames * 100);
 
-  if(game.slowestMove > rep.slowestMove) rep.slowestMove = game.slowestMove;
+  if (game.slowestMove > rep.slowestMove) rep.slowestMove = game.slowestMove;
 
   if (game.gameType === 'standard') {
     rep.standardGames++;
@@ -97,8 +101,11 @@ function report(game) {
     rep.duelGamesWinPercent = Math.floor(rep.duelGamesWon / rep.duelGames * 100);
   }
 
-  if(game.source == 'arena') rep.arenaGames++;
+  if (game.source == 'arena') rep.arenaGames++;
   else rep.nonArenaGames++;
+
+  if (game.slowestMove > rep.slowestMove) rep.slowestMove = game.slowestMove;
+  rep.exceptions = rep.exceptions + game.exceptions;
 
   // Next, find the people who defeated me the most
   // const winnersNames = gamesLost.map((game) => game.winnerName);

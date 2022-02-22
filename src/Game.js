@@ -10,6 +10,7 @@ class Game {
     this.slowestTurn = 0;
     this.slowestMove = 0;
     this.source = gameState.game.source;
+    this.exceptions = 0;
 
     gameState.board.snakes.forEach(snake => {
       if (snake.id != gameState.you.id) {

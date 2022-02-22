@@ -41,15 +41,15 @@ function start(gameState) {
 function end(gameState) {
   let gameID = gameState.game.id;
   console.log(`${gameID} END\n`);
+  let exceptions = log.writeLogs(gameState);
 
-  prepareReport(gameState, games[gameID]);
+  prepareReport(gameState, games[gameID], exceptions);
   let reportObj = report(games[gameID]); 
   console.log(games[gameID]);
 
   // write logs for this game to file
   console.log(reportObj);
   saveReport(reportObj);
-  log.writeLogs(gameState);
   
   delete games[gameID];
 }
