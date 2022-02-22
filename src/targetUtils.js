@@ -1,5 +1,5 @@
+const gridUtils = require('./gridUtils');
 const keys = require('./keys');
-const g = require('./grid');
 const log = require('./logger');
 
 const closestFood = (grid, startPos) => {
@@ -23,7 +23,7 @@ const closestTarget = (grid, startPos, targetType) => {
       for (let j = 0; j < grid[0].length; j++) {
         if (grid[i][j] === targetType) {
           const target = { x: j, y: i };
-          const distance = g.getDistance(startPos, target);
+          const distance = gridUtils.getDistance(startPos, target);
           if (distance < closestDistance) {
             closestTarget = target;
             closestDistance = distance;

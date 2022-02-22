@@ -1,7 +1,7 @@
 const jsonfile = require('jsonfile');
 const log = require('./logger');
 
-function prepareReport(gameState, game, exceptions) {
+function prepareGameReport(gameState, game, exceptions) {
   let winnerName = false;
   let won = false;
   let turns = gameState.turn - 1;
@@ -25,7 +25,7 @@ function prepareReport(gameState, game, exceptions) {
   else game.winnerName = gameState.board.snakes[0].name;
 }
 
-function createEmptyReport() {
+function createEmptyReportObj() {
   let rep = {};
 
   rep.total = {
@@ -69,7 +69,7 @@ function createEmptyReport() {
   return rep;
 }
 
-function report(game) {
+function getReportObj(game) {
 
   // eslint-disable-next-line no-undef
   const path = `${__dirname}/../report/report.json`;
@@ -80,7 +80,7 @@ function report(game) {
   } catch (err) {
     if (err && err.code === 'ENOENT') {
       log.info('Report file does not exist, creating new.');
-      rep = createEmptyReport();
+      rep = createEmptyReportObj();
     } else if (err) log.error(`ex in reporter.report.readFile: ${err}`);
   }
 
@@ -141,7 +141,6 @@ function report(game) {
     if (rep.winners.length > 1) {
       rep.winners = rep.winners.sort((a, b) => {
         return b.count - a.count;
-        // rep.winners.filter(w => w.count === a.count).length - rep.winners.filter(w => w.count === b.count).length;
       });
     }
   }
@@ -158,7 +157,7 @@ function saveReport(reportObj) {
 }
 
 module.exports = {
-  prepareReport,
-  report,
+  prepareGameReport,
+  getReportObj,
   saveReport
 };

@@ -1,15 +1,15 @@
 const keys = require('./keys');
-const g = require('./grid');
-const t = require('./target');
-const s = require('./self');
+const gridUtils = require('./gridUtils');
+const targetUtils = require('./targetUtils');
+const selfUtils = require('./selfUtils');
+const searchUtils = require('./searchUtils');
 const params = require('./params');
-const search = require('./search');
 const log = require('./logger');
 
 // target closest reachable food
 const eat = (grid, data) => {
   const you = data.you;
-  const myHead = s.location(data);
+  const myHead = selfUtils.location(data);
   const health = you.health;
   let urgencyScore = (110 - health);
   if (data.turn > params.INITIAL_FEEDING) {
@@ -18,19 +18,19 @@ const eat = (grid, data) => {
   log.info(`EATING w/ urgency ${urgencyScore}`);
   let target = null;
   let move = null;
-  const gridCopy = g.copyGrid(grid);
+  const gridCopy = gridUtils.copyGrid(grid);
   try {
-    target = t.closestFood(grid, myHead);
+    target = targetUtils.closestFood(grid, myHead);
     if (target === null) {
       log.info('No food was found on board.');
       return buildMove(grid, data, null, 0);
     }
-    move = search.astar(grid, data, target, keys.FOOD);
+    move = searchUtils.astar(grid, data, target, keys.FOOD);
     while (move === null && target != null) {
       gridCopy[target.y][target.x] = keys.DANGER;
-      target = t.closestFood(gridCopy, myHead);
+      target = targetUtils.closestFood(gridCopy, myHead);
       if (target === null) break;
-      move = search.astar(grid, data, target, keys.FOOD);
+      move = searchUtils.astar(grid, data, target, keys.FOOD);
     }
   }
   catch (e) { log.error(`ex in move.eat: ${e}`, data.turn); }
@@ -59,7 +59,7 @@ const hunt = (grid, data) => {
   log.info('HUNTING');
 
   try {
-    move = search.closeAccessableKillZoneFarFromWall(grid, data);
+    move = searchUtils.closeAccessableKillZoneFarFromWall(grid, data);
     if (move != null) score = params.ASTAR_SUCCESS;
   }
   catch (e) { log.error(`ex in move.hunt: ${e}`, data.turn); }
@@ -69,21 +69,21 @@ const hunt = (grid, data) => {
   return buildMove(grid, data, move, score);
 };
 
-const lateHunt = (grid, data) => {
-  let score = 0;
-  let move = null;
-  log.info('HUNTING, LATE GAME');
+// const lateHunt = (grid, data) => {
+//   let score = 0;
+//   let move = null;
+//   log.info('HUNTING, LATE GAME');
 
-  try {
-    move = search.closeAccessableFuture2FarFromWall(grid, data);
-    if (move != null) score = params.ASTAR_SUCCESS;
-  }
-  catch (e) { log.error(`ex in move.lateHunt: ${e}`, data.turn); }
+//   try {
+//     move = search.closeAccessableFuture2FarFromWall(grid, data);
+//     if (move != null) score = params.ASTAR_SUCCESS;
+//   }
+//   catch (e) { log.error(`ex in move.lateHunt: ${e}`, data.turn); }
 
-  if (move != null) log.debug(`In lateHunt calulated score ${score} for move ${keys.DIRECTION[move]}`);
-  else if (move === null) log.debug('Move in lateHunt was NULL.');
-  return buildMove(grid, data, move, score);
-};
+//   if (move != null) log.debug(`In lateHunt calulated score ${score} for move ${keys.DIRECTION[move]}`);
+//   else if (move === null) log.debug('Move in lateHunt was NULL.');
+//   return buildMove(grid, data, move, score);
+// };
 
 // track own tail
 const killTime = (grid, data) => {
@@ -101,16 +101,16 @@ const getFallbackMove = (grid, data) => {
   try {
     log.info('Resorting to fallback move');
     // try finding a path to tail first
-    let target = s.tailLocation(data);
-    let move = search.astar(grid, data, target, keys.TAIL);
+    let target = selfUtils.tailLocation(data);
+    let move = searchUtils.astar(grid, data, target, keys.TAIL);
     let score = 0;
     // if no path to own tail, try searching for food
-    const gridCopy = g.copyGrid(grid);
+    const gridCopy = gridUtils.copyGrid(grid);
     while (move === null) {
-      target = t.closestFood(gridCopy, s.location(data));
+      target = targetUtils.closestFood(gridCopy, selfUtils.location(data));
       if (target != null) {
         gridCopy[target.y][target.x] = keys.WARNING;
-        move = search.astar(grid, data, target, keys.FOOD);
+        move = searchUtils.astar(grid, data, target, keys.FOOD);
       }
       // if no more food to search for just quit
       else break;
@@ -127,15 +127,15 @@ const getFallbackMove = (grid, data) => {
 const coil = (grid, data) => {
   log.info('Trying to coil to save space');
   try {
-    let tailLocation = s.tailLocation(data);
+    let tailLocation = selfUtils.tailLocation(data);
     let tailDistances = [0, 0, 0, 0];
     let largestDistance = 0;
 
     for (let m = 0; m < 4; m++) {
-      const nextMove = search.applyMoveToPos(m, s.location(data));
-      if (search.outOfBounds(nextMove, grid)) continue;
+      const nextMove = searchUtils.applyMoveToPos(m, selfUtils.location(data));
+      if (searchUtils.outOfBounds(nextMove, grid)) continue;
       if (grid[nextMove.y][nextMove.x] >= keys.SNAKE_BODY) continue;
-      const currentDistance = g.getDistance(tailLocation, nextMove);
+      const currentDistance = gridUtils.getDistance(tailLocation, nextMove);
       log.debug(`Distance to tail for move ${keys.DIRECTION[m]} is ${currentDistance}`);
       if (tailDistances[m] < currentDistance) {
         tailDistances[m] = currentDistance;
@@ -190,20 +190,20 @@ const buildMove = (grid, data, move, moveScore = 0) => {
   try {
     log.info('Performing flood fill searches');
     for (let m = 0; m < 4; m++) {
-      let gridCopy = g.copyGrid(grid);
-      scores[m] += search.fill(m, grid, data);
-      gridCopy = g.moveTails(1, grid, data);
+      let gridCopy = gridUtils.copyGrid(grid);
+      scores[m] += searchUtils.fill(m, grid, data);
+      gridCopy = gridUtils.moveTails(1, grid, data);
       if (params.DEBUG_MAPS) {
         log.debug('Map for fill search 1 move in advance');
-        g.printGrid(gridCopy);
+        gridUtils.printGrid(gridCopy);
       }
-      scores[m] += search.fill(m, gridCopy, data, [keys.KILL_ZONE, keys.DANGER, keys.WARNING]);
-      gridCopy = g.moveTails(2, grid, data);
+      scores[m] += searchUtils.fill(m, gridCopy, data, [keys.KILL_ZONE, keys.DANGER, keys.WARNING]);
+      gridCopy = gridUtils.moveTails(2, grid, data);
       if (params.DEBUG_MAPS) {
         log.debug('Map for fill search 2 moves in advance');
-        g.printGrid(gridCopy);
+        gridUtils.printGrid(gridCopy);
       }
-      scores[m] += search.fill(m, gridCopy, data, [keys.KILL_ZONE, keys.DANGER, keys.WARNING, keys.FUTURE_2]);
+      scores[m] += searchUtils.fill(m, gridCopy, data, [keys.KILL_ZONE, keys.DANGER, keys.WARNING, keys.FUTURE_2]);
     }
   }
   catch (e) { log.error(`ex in move.buildMove.fill: ${e}`, data.turn); }
@@ -216,7 +216,7 @@ const buildMove = (grid, data, move, moveScore = 0) => {
     let largestDistanceMove = 0;
     let uniqueLargestDistanceMove = false;
     for (let m = 0; m < 4; m++) {
-      const currentDistance = search.distanceToEnemy(m, grid, data, keys.ENEMY_HEAD);
+      const currentDistance = searchUtils.distanceToEnemy(m, grid, data, keys.ENEMY_HEAD);
       log.debug(`Distance to closest dangerous snake for move ${keys.DIRECTION[m]} is ${currentDistance}`);
       if (enemyDistances[m] < currentDistance) {
         enemyDistances[m] = currentDistance;
@@ -243,7 +243,7 @@ const buildMove = (grid, data, move, moveScore = 0) => {
     let smallestDistanceMove = 0;
     let uniqueSmallestDistanceMove = false;
     for (let m = 0; m < 4; m++) {
-      const currentDistance = search.distanceToEnemy(m, grid, data, keys.KILL_ZONE);
+      const currentDistance = searchUtils.distanceToEnemy(m, grid, data, keys.KILL_ZONE);
       log.debug(`Distance to closest killable snake for move ${keys.DIRECTION[m]} is ${currentDistance}`);
       if (currentDistance === 0) continue;
       if (enemyDistances[m] > currentDistance) {
@@ -271,7 +271,7 @@ const buildMove = (grid, data, move, moveScore = 0) => {
     let largestDistanceMove = 0;
     let uniqueLargestDistanceMove = false;
     for (let m = 0; m < 4; m++) {
-      const currentDistance = search.distanceToCenter(m, s.location(data), grid, data);
+      const currentDistance = searchUtils.distanceToCenter(m, selfUtils.location(data), grid, data);
       log.debug(`Distance from wall for move ${keys.DIRECTION[m]} is ${currentDistance}`);
       // if (currentDistance === 0) continue;
       if (centerDistances[m] < currentDistance) {
@@ -326,7 +326,7 @@ const baseMoveScores = (grid, self) => {
 const baseScoreForBoardPosition = (x, y, grid) => {
   try {
     // if out of bounds
-    if (search.outOfBounds({ x: x, y: y }, grid)) return params.FORGET_ABOUT_IT;
+    if (searchUtils.outOfBounds({ x: x, y: y }, grid)) return params.FORGET_ABOUT_IT;
     // types of spaces
     switch (grid[y][x]) {
       case keys.SPACE:
@@ -356,7 +356,7 @@ const baseScoreForBoardPosition = (x, y, grid) => {
 // check if move is not fatal
 const validMove = (direction, pos, grid) => {
   try {
-    if (search.outOfBounds(pos, grid)) return false;
+    if (searchUtils.outOfBounds(pos, grid)) return false;
     switch (direction) {
       case keys.UP:
         return grid[pos.y + 1][pos.x] <= keys.DANGER;
@@ -424,6 +424,5 @@ module.exports = {
   eat: eat,
   killTime: killTime,
   hunt: hunt,
-  lateHunt: lateHunt,
   validMove: validMove
 };

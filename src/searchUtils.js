@@ -1,7 +1,7 @@
 const keys = require('./keys');
-const g = require('./grid');
-const t = require('./target');
-const s = require('./self');
+const gridUtils = require('./gridUtils');
+const targetUtils = require('./targetUtils');
+const searchUtils = require('./selfUtils');
 const params = require('./params');
 const log = require('./logger');
 
@@ -11,8 +11,8 @@ const fill = (direction, grid, data, constraints = []) => {
   let area = 0;
   let closedGrid;
   let openGrid;
-  closedGrid = g.initGrid(grid[0].length, grid.length, false);
-  openGrid = g.initGrid(grid[0].length, grid.length, false);
+  closedGrid = gridUtils.initGrid(grid[0].length, grid.length, false);
+  openGrid = gridUtils.initGrid(grid[0].length, grid.length, false);
   let openStack = [];
 
   const inGrid = (pos, grd) => {
@@ -149,16 +149,16 @@ const astar = (grid, data, destination, searchType = keys.FOOD, alternateStartPo
   let closedSet = [];
   // start location for search is current head location
 
-  const start = (alternateStartPos === null) ? s.location(data) : alternateStartPos;
+  const start = (alternateStartPos === null) ? searchUtils.location(data) : alternateStartPos;
   // on first few moves, point to closest food no matter what
   if (data.turn < params.INITIAL_FEEDING) {
     log.debug('Within initial feeding, overriding move with closest food.');
-    destination = t.closestFood(grid, start);
+    destination = targetUtils.closestFood(grid, start);
     searchType = keys.FOOD;
   }
   if (destination == null) {
     log.debug('In search.astar, destination was null, trying to target tail.');
-    destination = s.tailLocation(data);
+    destination = searchUtils.tailLocation(data);
     searchType = keys.TAIL;
   }
   log.info(`astar destination: ${keys.TYPE[searchType]}, ${pairToString(destination)}`);
@@ -247,7 +247,7 @@ const astar = (grid, data, destination, searchType = keys.FOOD, alternateStartPo
           // this is the current best path, record it
           if (shorter) {
             neighborCell.g = tempG;
-            neighborCell.h = g.getDistance(neighbor, destination);
+            neighborCell.h = gridUtils.getDistance(neighbor, destination);
             neighborCell.f = neighborCell.g + neighborCell.h;
             neighborCell.previous = current;
           }
@@ -271,12 +271,12 @@ const astar = (grid, data, destination, searchType = keys.FOOD, alternateStartPo
 const preprocessGrid = (grid, data) => {
   try {
     log.info('Preprocessing grid.');
-    if (g.nearPerimeter(s.location(data), grid)) {
+    if (gridUtils.nearPerimeter(searchUtils.location(data), grid)) {
       log.debug('I am near perimeter.');
       const enemyLocations = getEnemyLocations(data);
-      let gridCopy = g.copyGrid(grid);
+      let gridCopy = gridUtils.copyGrid(grid);
       for (let enemy of enemyLocations) {
-        if (g.onPerimeter(enemy, grid)) {
+        if (gridUtils.onPerimeter(enemy, grid)) {
           log.debug(`Enemy at ${pairToString(enemy)} is on perimeter`);
           let result = edgeFillFromEnemyToYou(enemy, gridCopy, grid, data);
           gridCopy = result.grid;
@@ -291,7 +291,7 @@ const preprocessGrid = (grid, data) => {
 
 const edgeFillFromEnemyToYou = (enemy, gridCopy, grid, data) => {
   try {
-    const yourHead = s.location(data);
+    const yourHead = searchUtils.location(data);
     const enemyMoves = getEnemyMoveLocations(enemy, grid);
     for (let enemyMove of enemyMoves) {
       log.debug (`Doing enemy edge fill for move @ ${pairToString(enemyMove)}`);
@@ -300,8 +300,8 @@ const edgeFillFromEnemyToYou = (enemy, gridCopy, grid, data) => {
 
       let closedGrid;
       let openGrid;
-      closedGrid = g.initGrid(grid[0].length, grid.length, false);
-      openGrid = g.initGrid(grid[0].length, grid.length, false);
+      closedGrid = gridUtils.initGrid(grid[0].length, grid.length, false);
+      openGrid = gridUtils.initGrid(grid[0].length, grid.length, false);
       let openStack = [];
 
       const inGrid = (pos, grd) => {
@@ -313,7 +313,7 @@ const edgeFillFromEnemyToYou = (enemy, gridCopy, grid, data) => {
       const addToOpen = pos => {
         try {
           if (!outOfBounds(pos, grid) && !inGrid(pos, closedGrid) && !inGrid(pos, openGrid)) {
-            if (inGrid(pos, grid) <= keys.DANGER && g.onPerimeter(pos, grid)) {
+            if (inGrid(pos, grid) <= keys.DANGER && gridUtils.onPerimeter(pos, grid)) {
               openStack.push(pos);
               openGrid[pos.y][pos.x] = true;
               return true;
@@ -359,7 +359,7 @@ const edgeFillFromEnemyToYou = (enemy, gridCopy, grid, data) => {
             foundMe = true;
             break;
           }
-          if (!g.onPerimeter(nextUp, grid)) {
+          if (!gridUtils.onPerimeter(nextUp, grid)) {
             if (inGrid(nextUp, grid) < keys.SNAKE_BODY) {
               fail = true;
               break;
@@ -374,7 +374,7 @@ const edgeFillFromEnemyToYou = (enemy, gridCopy, grid, data) => {
             foundMe = true;
             break;
           }
-          if ( !g.onPerimeter(nextDown, grid)) {
+          if ( !gridUtils.onPerimeter(nextDown, grid)) {
             if (inGrid(nextDown, grid) < keys.SNAKE_BODY) {
               fail = true;
               break;
@@ -389,7 +389,7 @@ const edgeFillFromEnemyToYou = (enemy, gridCopy, grid, data) => {
             foundMe = true;
             break;
           }
-          if ( !g.onPerimeter(nextLeft, grid)) {
+          if ( !gridUtils.onPerimeter(nextLeft, grid)) {
             if (inGrid(nextLeft, grid) < keys.SNAKE_BODY) {
               fail = true;
               break;
@@ -404,7 +404,7 @@ const edgeFillFromEnemyToYou = (enemy, gridCopy, grid, data) => {
             foundMe = true;
             break;
           }
-          if (!g.onPerimeter(nextRight, grid)) {
+          if (!gridUtils.onPerimeter(nextRight, grid)) {
             if (inGrid(nextRight, grid) < keys.SNAKE_BODY) {
               fail = true;
               break;
@@ -425,7 +425,7 @@ const edgeFillFromEnemyToYou = (enemy, gridCopy, grid, data) => {
 
       if(params.DEBUG_MAPS) {
         log.debug('Grid after edge fill search:');
-        g.printGrid(gridCopy);
+        gridUtils.printGrid(gridCopy);
       }
 
       if (foundMe) {
@@ -484,11 +484,11 @@ const closeAccessableFuture2FarFromWall = (grid, data) => {
     let target = null;
     let move = null;
     let foundMove = false;
-    let gridCopy = g.copyGrid(grid);
+    let gridCopy = gridUtils.copyGrid(grid);
     while (!foundMove) {
-      target = t.closestTarget(gridCopy, you.body[0], keys.SMALL_HEAD);
+      target = targetUtils.closestTarget(gridCopy, you.body[0], keys.SMALL_HEAD);
       if (target === null) {
-        target = t.closestTarget(gridCopy, you.body[0], keys.ENEMY_HEAD);
+        target = targetUtils.closestTarget(gridCopy, you.body[0], keys.ENEMY_HEAD);
       }
       if (target === null) {
         return null;
@@ -515,9 +515,9 @@ const closeAccessableKillZoneFarFromWall = (grid, data) => {
     let target = null;
     let move = null;
     let foundMove = false;
-    let gridCopy = g.copyGrid(grid);
+    let gridCopy = gridUtils.copyGrid(grid);
     while (!foundMove) {
-      target = t.closestTarget(gridCopy, you.body[0], keys.SMALL_HEAD);
+      target = targetUtils.closestTarget(gridCopy, you.body[0], keys.SMALL_HEAD);
       if (target === null) {
         return null;
       }
@@ -673,10 +673,10 @@ const distanceToEnemy = (direction, grid, data, type = keys.ENEMY_HEAD) => {
   try {
     const you = data.you;
     if (validMove(direction, you.body[0], grid)) {
-      const closestEnemyHead = t.closestTarget(grid, you.body[0], type);
+      const closestEnemyHead = targetUtils.closestTarget(grid, you.body[0], type);
       // if (p.DEBUG && closestEnemyHead != null) log.debug(`Closest enemy for move ${k.DIRECTION[direction]} is ${pairToString(closestEnemyHead)}`);
       if (closestEnemyHead === null) return 0;
-      return g.getDistance(closestEnemyHead, applyMoveToPos(direction, you.body[0]));
+      return gridUtils.getDistance(closestEnemyHead, applyMoveToPos(direction, you.body[0]));
     }
   }
   catch (e) { log.error(`ex in search.distanceToEnemy: ${e}`, data.turn); }

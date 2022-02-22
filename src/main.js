@@ -1,6 +1,6 @@
 const log = require('./logger');
 const Game = require('./Game');
-const { prepareReport, report, saveReport } = require('./reporter');
+const reporter = require('./reporter');
 const games = {};
 
 function info() {
@@ -24,7 +24,7 @@ function start(gameState) {
   // ensure previous game logs are cleared
   log.initGameLogs();
   log.info(`####################################### STARTING GAME ${gameState.game.id}`);
-  log.info(`My snake id is ${gameState.you.id}`);
+  log.debug(`My snake id is ${gameState.you.id}`);
   log.info('Snakes playing this game are:');
   try {
     gameState.board.snakes.forEach(({ name }) => {
@@ -40,15 +40,15 @@ function start(gameState) {
 function end(gameState) {
   let gameID = gameState.game.id;
   console.log(`${gameID} END\n`);
-  let exceptions = log.writeLogs(gameState);
 
-  prepareReport(gameState, games[gameID], exceptions);
-  let reportObj = report(games[gameID]);
+  let exceptions = log.writeLogs(gameState);
+  reporter.prepareGameReport(gameState, games[gameID], exceptions);
+  let reportObj = reporter.getReportObj(games[gameID]);
+  
   console.log(games[gameID]);
 
-  // write logs for this game to file
   console.log(reportObj);
-  saveReport(reportObj);
+  reporter.saveReport(reportObj);
 
   delete games[gameID];
 }
