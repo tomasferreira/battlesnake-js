@@ -1,18 +1,18 @@
 {
-  "name": "starter-snake-javascript",
-  "version": "1.0.0",
-  "description": "A simple Battlesnake written in JavaScript",
+  "name": "battlesnake-js",
+  "version": "2.0.0",
+  "description": "A Battlesnake written in JavaScript that can perform basic search algorithms",
   "scripts": {
     "start": "node src/index.js",
     "test": "jest --silent"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/BattlesnakeOfficial/starter-snake-javascript.git"
+    "url": "git+https://github.com/tomasferreira/battlesnake-js.git"
   },
-  "author": "BattlesnakeOfficial",
+  "author": "tomasferreira",
   "license": "MIT",
-  "homepage": "https://github.com/BattlesnakeOfficial/starter-snake-javascript#readme",
+  "homepage": "",
   "dependencies": {
     "express": "^4.17.1",
     "fs": "^0.0.1-security",
