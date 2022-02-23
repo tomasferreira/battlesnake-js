@@ -127,15 +127,25 @@ function getReportObj(game) {
     rep.winners.forEach(winner => {
       if (game.winnerName == winner.name) {
         winner.count++;
+        if(game.gameType === 'royale') winner.royaleCount++;
+        if(game.gameType === 'standard') winner.standardCount++;
+        if(game.gameType === 'duel') winner.duelCount++;
         exists = true;
       }
     });
 
     if (!exists) {
-      rep.winners.push({
+      let winner = {
         name: game.winnerName,
-        count: 1
-      });
+        count: 1,
+        standardCount: 0,
+        duelCount: 0,
+        royaleCount: 0
+      };
+      if(game.gameType === 'royale') winner.royaleCount++;
+      if(game.gameType === 'standard') winner.standardCount++;
+      if(game.gameType === 'duel') winner.duelCount++; 
+      rep.winners.push(winner);
     }
 
     if (rep.winners.length > 1) {
