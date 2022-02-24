@@ -40,15 +40,19 @@ function start(gameState) {
 function end(gameState) {
   let gameID = gameState.game.id;
   console.log(`${gameID} END\n`);
+  log.info(`Game Obj: ${JSON.stringify(games[gameID], null, 2)}`);
 
   let exceptions = log.writeLogs(gameState);
+
   reporter.prepareGameReport(gameState, games[gameID], exceptions);
   let reportObj = reporter.getReportObj(games[gameID]);
   
-  console.log(games[gameID]);
 
-  console.log(reportObj);
   reporter.saveReport(reportObj);
+  console.log(reportObj.winners.slice(0,5));
+  console.log(reportObj.total);
+  console.log(reportObj.standard);
+  console.log(reportObj.duel);
 
   delete games[gameID];
 }

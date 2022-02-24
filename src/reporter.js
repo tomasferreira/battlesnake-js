@@ -2,27 +2,22 @@ const jsonfile = require('jsonfile');
 const log = require('./logger');
 
 function prepareGameReport(gameState, game, exceptions) {
-  let winnerName = false;
   let won = false;
   let turns = gameState.turn - 1;
 
   if (gameState.board.snakes.length !== 0) {
-    const winningSnake = gameState.board.snakes[0];
-    winnerName = gameState.board.snakes[0].name;
-    if (winningSnake.id === gameState.you.id) {
+    game.winnerName = gameState.board.snakes[0].name;
+    if (gameState.board.snakes[0].id === gameState.you.id) {
       won = true;
     }
-  }
+  } else game.tie = true;
 
-  game.winnerName = winnerName;
   game.won = won;
   game.turns = turns;
 
   game.slowestMove = game.player.slowestMove;
   game.slowestTurn = game.player.slowestTurn;
   game.exceptions = exceptions;
-  if (gameState.board.snakes.length === 0) game.tie = true;
-  else game.winnerName = gameState.board.snakes[0].name;
 }
 
 function createEmptyReportObj() {
@@ -127,9 +122,9 @@ function getReportObj(game) {
     rep.winners.forEach(winner => {
       if (game.winnerName == winner.name) {
         winner.count++;
-        if(game.gameType === 'royale') winner.royaleCount++;
-        if(game.gameType === 'standard') winner.standardCount++;
-        if(game.gameType === 'duel') winner.duelCount++;
+        if (game.gameType === 'royale') winner.royaleCount++;
+        if (game.gameType === 'standard') winner.standardCount++;
+        if (game.gameType === 'duel') winner.duelCount++;
         exists = true;
       }
     });
@@ -142,9 +137,7 @@ function getReportObj(game) {
         duelCount: 0,
         royaleCount: 0
       };
-      if(game.gameType === 'royale') winner.royaleCount++;
-      if(game.gameType === 'standard') winner.standardCount++;
-      if(game.gameType === 'duel') winner.duelCount++; 
+
       rep.winners.push(winner);
     }
 
