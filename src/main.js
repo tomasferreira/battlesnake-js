@@ -40,11 +40,11 @@ function start(gameState) {
 function end(gameState) {
   let gameID = gameState.game.id;
   console.log(`${gameID} END\n`);
-  log.info(`Game Obj: ${JSON.stringify(games[gameID], null, 2)}`);
 
   let exceptions = log.writeLogs(gameState);
 
   reporter.prepareGameReport(gameState, games[gameID], exceptions);
+  log.info(`Game Obj: ${JSON.stringify(games[gameID], null, 2)}`);
   let reportObj = reporter.getReportObj(games[gameID]);
   
 
