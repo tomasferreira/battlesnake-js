@@ -7,6 +7,6 @@ This is an implementation of the [Battlesnake API](https://docs.battlesnake.com/
 * [JavaScript](https://www.javascript.com/)
 * [Node.js](https://nodejs.dev/)
 * [Express](https://expressjs.com/)
-* [RaspberyPi](https://www.raspberrypi.org/)
+* [RaspberryPi](https://www.raspberrypi.org/)
 * [PM2](https://pm2.keymetrics.io/)
 * [ngrok](https://ngrok.com/)
